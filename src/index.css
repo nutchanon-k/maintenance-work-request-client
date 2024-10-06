@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.login-image {
+    background: url('./assets/pexels-pixabay-159298.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    opacity: 80%;
+  }
