@@ -125,6 +125,7 @@ const AdminSidebar = () => {
               </Link>
             </div>
           </div>
+
           {/* Manage User link */}
           <div className={`flex items-center ${isSidebarOpen ? "w-[225px]" : ""} `}>
             <Link className= {`flex items-center p-2 hover:bg-base-200 rounded ${isSidebarOpen ? "w-full" : ""}`}
@@ -137,10 +138,10 @@ const AdminSidebar = () => {
 
           {/* Add New Request button */}
           {isSidebarOpen && (
-            <button className="btn btn-secondary w-full mt-4">
+            <Link to={"/create-request-task"} className="btn btn-secondary w-full mt-4">
               <AiOutlinePlus size={20} className="mr-2" />
               Add New Request
-            </button>
+            </Link>
           )}
 
         </nav>

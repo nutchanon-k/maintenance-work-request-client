@@ -1,12 +1,37 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import useRequestTaskStore from '../store/RequestTaskStore'
+import useUserStore from '../store/UserStore'
 
-export function CardRequest() {
+export function CardRequest(props) {
+    const {ReqTask} = props
+
+    const getRequestTask = useRequestTaskStore(state => state.getRequestTask)
+    const token = useUserStore(state => state.token)
+
+    const location = ReqTask.machine?.location?.name
+    const status = ReqTask.status
+    const isAssigned = ReqTask.isAssigned
+    // console.log(ReqTask)
+    
+    const handleClick = (e) => {
+        getRequestTask(token,ReqTask.id)
+    }
+    
+    
+    
+    
     return (
-        <div className="card bg-base-100 w-72 shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all" >
+        <Link 
+            className="card bg-base-100 w-72 shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all"
+            onClick={handleClick} 
+            to={`/show-request-task`}
+            id = {ReqTask.id}
+        >
             <div className="card-body">
                 <div className='flex justify-between'>
-                    <div className="badge badge-primary badge-outline">Factory1</div>
-                    <div className="badge badge-secondary">Waiting</div>
+                    {location==="Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
+                    {isAssigned ? <div className="badge badge-primary">Assigned</div> : <div className="badge badge-secondary">Waiting..</div>}
                 </div>
                 <h2 className="card-title">Request No. xxxxxxx</h2>
                 <p className='text-sm text-gray-500 font-b'>M/C Number xxxxxxxx</p>
@@ -15,9 +40,10 @@ export function CardRequest() {
             <figure>
                 <img src="../src/assets/machine.jpg" alt="machine" />
             </figure>
-        </div>
+        </Link>
     )
 }
+
 
 export function CardMaintenance() {
     return (

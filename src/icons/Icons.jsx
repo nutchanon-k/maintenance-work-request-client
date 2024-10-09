@@ -26,7 +26,7 @@ export function DropDownIcon(props) {
       </svg>
     )
   }
- export function SearchIcon(props) {
+export function SearchIcon(props) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -39,5 +39,54 @@ export function DropDownIcon(props) {
                 d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
                 clipRule="evenodd" />
         </svg>
+    )
+  }
+export function UploadIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 10a4 4 0 118 0v1h1a3.5 3.5 0 110 7h-1a1 1 0 100 2h1a5.5 5.5 0 00.93-10.922 6.001 6.001 0 00-11.86 0A5.502 5.502 0 007 20h1a1 1 0 100-2H7a3.5 3.5 0 110-7h1v-1zm7.707 3.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L11 13.414V19a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414z"
+        fill="#a3a3a3"
+      />
+    </svg>
+  )
+}
+
+export function CloseIcon(props) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <g stroke="#5c5c5c" strokeWidth={1.5} strokeLinecap="round">
+        <path d="M14.5 9.5l-5 5m0-5l5 5M7 3.338A9.954 9.954 0 0112 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5" />
+      </g>
+    </svg>
+  )
+}
+
+export function NoPhotoIcon(props) {
+    return (
+      <svg
+        fill="gray"
+        height="200px"
+        width="200px"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512.001 512.001"
+        xmlSpace="preserve"
+        stroke="gray"
+        {...props}
+      >
+        <path d="M160.235 276.571l-144.5-159.983C6.352 122.166.001 132.299.001 144.002v256.005c0 17.672 14.328 31.994 32 31.994h268.625l-58.867-65.17c-44.766-6.676-79.352-44.169-81.524-90.26zM480.001 112.001h-112l-23.156-46.313a32.002 32.002 0 00-28.625-17.687H195.782a32.003 32.003 0 00-28.625 17.688l-10.836 21.672-68.539-76.767C75.985-2.539 55.735-3.61 42.594 8.211c-13.141 11.828-14.203 32.063-2.375 45.196l399.992 448c6.313 7.024 15.031 10.594 23.797 10.594a31.877 31.877 0 0021.391-8.211c13.141-11.828 14.203-32.067 2.375-45.2L464.04 432h15.961c17.672 0 32-14.321 32-31.994V144.002c0-17.672-14.329-32.001-32-32.001zM237.196 177.94c6.086-1.219 12.359-1.938 18.805-1.938 53.016 0 96 42.981 96 96.002 0 10.223-1.758 19.996-4.727 29.227L237.196 177.94z" />
+      </svg>
     )
 }

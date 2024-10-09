@@ -5,6 +5,7 @@ import useUserStore from '../../store/UserStore';
 
 const AdminHeader = () => {
   const hdlLogout = useUserStore(state => state.hdlLogout)
+  const user = useUserStore(state => state.user)
 
 
   return (
@@ -21,15 +22,15 @@ const AdminHeader = () => {
         {/* User Info */}
         <div className="flex items-center space-x-2">
           <div className="text-right">
-            <p className="font-semibold">Nutchanon Nut</p>
-            <p className="text-sm text-gray-500">Admin</p>
+            <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
+            <p className="text-sm text-gray-500">{user.role}</p>
           </div>
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Avatar
                   className="w-11 h-11 rounded-full !flex justify-center items-center"
-                  // imgSrc={user.profileImage}
+                  imgSrc={user.picture}
                   menu={true}
                 />
               </div>

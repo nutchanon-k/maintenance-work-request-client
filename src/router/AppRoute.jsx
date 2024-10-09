@@ -7,7 +7,7 @@ import MaintenanceBacklog from "../pages/MaintenanceTask/MaintenanceBacklog";
 import MaintenanceInProgress from "../pages/MaintenanceTask/MaintenanceInProgress";
 import MaintenanceInReview from "../pages/MaintenanceTask/MaintenanceInReview";
 import MaintenanceSuccess from "../pages/MaintenanceTask/MaintenanceSuccess";
-import ManageUsers from "../pages/User/ManageUser";
+import ManageUsers from "../pages/user/ManageUser";
 import Login from "../pages/authenticate/Login";
 import useUserStore from "../store/UserStore";
 import NotFound from "../pages/NotFound";
