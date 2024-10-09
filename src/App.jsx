@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Login from './components/Login';
-import useDataStore from './store/DataStore';
-import SideBar from './components/SideBar';
+import AdminLayout from './layouts/AdminLayout';
+import AppRouter from './router/AppRoute';
+import Login from './pages/authenticate/Login';
+
 
 
 
@@ -12,9 +13,7 @@ function App() {
   return (
     <div>
       <ToastContainer/>
-      {/* <Login/> */}
-      <SideBar/>
-      
+      <AppRouter />
     </div>
   )
 }
