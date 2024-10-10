@@ -15,7 +15,7 @@ const CreateNewRequest = () => {
     const user = useUserStore(state => state.user)
     const token = useUserStore(state => state.token)
     const createNewRequest = useRequestTaskStore(state => state.createRequestTask)
-    const requestTasks = useRequestTaskStore(state => state.requestTasks)
+    
 
 
     const [machineId, setMachineId] = useState('');
@@ -25,7 +25,7 @@ const CreateNewRequest = () => {
     const [loading, setLoading] = useState(false)
 
 
-    console.log(requestTasks)
+    
     
 
     const handleSubmit = async (e) => {

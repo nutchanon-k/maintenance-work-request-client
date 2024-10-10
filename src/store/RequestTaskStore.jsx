@@ -1,7 +1,8 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios from 'axios'
-import { createRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus } from '../api/RequestTask';
+import { createRequestTaskAPI, deleteRequestTaskAPI, editRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus } from '../api/RequestTask';
+import { toast } from 'react-toastify';
 
 
 
@@ -41,8 +42,32 @@ const useRequestTaskStore = create(persist((set, get) => ({
             console.log(error)
         }
     },
+    editRequestTask : async (token, body, requestId) => {
+        try{
+            const result = await editRequestTaskAPI(token, body, requestId)
+              return result
+        }catch(error){
+            console.log(error)
+            toast.error(error.response.data.message)
+        }
+    },
+    deleteRequestTask : async (token, requestId) => {
+        try{
+            console.log( 'reqID in store ' ,requestId)
+            const result = await deleteRequestTaskAPI(token, requestId)
+            
+            set(state=>({requestTasksInprogress : state.requestTasksInprogress.filter(task => task.id !== requestId)}))
+            return result
+        }catch(error){
+            console.log(error)
+            toast.error(error.response.data.message)
+        }
+    },
 
 
+    resetCurrentTask : () => {
+        set({currentTask : null})
+    },
 
 
 

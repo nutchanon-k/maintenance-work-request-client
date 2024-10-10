@@ -14,12 +14,16 @@ const RequestInProgress = () => {
   const token = useUserStore(state => state.token)
   const getRequestTaskInprogress = useRequestTaskStore(state => state.getRequestTaskInprogress)
   const requestTasksInprogress = useRequestTaskStore(state => state.requestTasksInprogress)
+  const currentTask = useRequestTaskStore(state => state.currentTask)
+  const  resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
 
-  console.log(requestTasksInprogress)
+  // console.log(requestTasksInprogress)
   useEffect(() => {
     getRequestTaskInprogress(token)
+    resetCurrentTask()
   }, [])
 
+  console.log(currentTask)
   // console.log(requestTasks)
   return (
     <div className='flex flex-col  '>
@@ -31,8 +35,6 @@ const RequestInProgress = () => {
           </Link>
         </div>
         <div className='text-3xl p-2 flex gap-2'>
-
-          {/* map from db */}
           <select  className="select select-bordered w-full max-w-xs ">
             <option disabled selected>Location</option>
             <option>All</option>
