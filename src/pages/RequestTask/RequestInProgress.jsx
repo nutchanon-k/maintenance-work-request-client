@@ -14,8 +14,7 @@ const RequestInProgress = () => {
   const token = useUserStore(state => state.token)
   const getRequestTaskInprogress = useRequestTaskStore(state => state.getRequestTaskInprogress)
   const requestTasksInprogress = useRequestTaskStore(state => state.requestTasksInprogress)
-  const currentTask = useRequestTaskStore(state => state.currentTask)
-  const  resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
+  const resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
 
   // console.log(requestTasksInprogress)
   useEffect(() => {
@@ -23,7 +22,7 @@ const RequestInProgress = () => {
     resetCurrentTask()
   }, [])
 
-  console.log(currentTask)
+  // console.log(currentTask)
   // console.log(requestTasks)
   return (
     <div className='flex flex-col  '>
@@ -49,7 +48,7 @@ const RequestInProgress = () => {
       <div className='flex flex-1 flex-wrap gap-4 p-4 '>
         {requestTasksInprogress.map((el) => <CardRequest key={el.id} ReqTask = {el} />)}
       </div>
-
+ 
     </div>
   )
 }

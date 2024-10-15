@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import  { CardRequest } from '../../components/Card'
 import { Link } from 'react-router-dom'
 import Calendar from '../../components/Calendar'
+import { CardRequest } from '../../components/Card'
+import { useNavigate } from 'react-router-dom'
+import useRequestTaskStore from '../../store/RequestTaskStore'
+import useUserStore from '../../store/UserStore'
 
 const RequestSuccess = () => {
 
+  const token = useUserStore(state => state.token)
+  const getRequestTaskSuccess = useRequestTaskStore(state => state.getRequestTaskSuccess)
+  const requestTasksSuccess = useRequestTaskStore(state => state.requestTasksSuccess)
+  const resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
+
   const [selectedDate, setSelectedDate] = useState('');
 
-  console.log("test",selectedDate)
+  useEffect(() => {
+    getRequestTaskSuccess(token)
+    resetCurrentTask()
+  }, [])
+  console.log(requestTasksSuccess)
+  // console.log("test",selectedDate)
   return (
     <div className='flex flex-col  '>
       <div className='flex justify-between p-4 '>
@@ -30,11 +43,7 @@ const RequestSuccess = () => {
       </div>
       {/* <div className="divider"></div> */}
       <div className='flex flex-1 flex-wrap gap-4 p-4 '>
-        <CardRequest />
-        <CardRequest />
-        <CardRequest />
-        <CardRequest />
-
+        {requestTasksSuccess.map((el) => (<CardRequest key={el.id} ReqTask = {el} />))}
       </div>
 
     </div>

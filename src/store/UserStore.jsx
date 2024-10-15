@@ -1,6 +1,7 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios from 'axios'
+import { getMaintenanceMembersAPI } from '../api/UserAPI';
 
 
 
@@ -8,6 +9,7 @@ import axios from 'axios'
 const useUserStore = create(persist((set, get) => ({
   user: null,
   token: "",
+  maintenanceMembers: [],
 
   hdlLogin: async (body) => {
     try{
@@ -25,6 +27,17 @@ const useUserStore = create(persist((set, get) => ({
   hdlLogout: () => {
       set({ user: null, token: "" })
   },
+
+  getMaintenanceMembers: async (token) => {
+    try{
+      const result = await getMaintenanceMembersAPI(token)
+      set({ maintenanceMembers: result.data.data })
+      // console.log("xxxxxxxx", result.data.data)
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  }
 }),{
   name: "accessToken",
   storage: createJSONStorage(() => localStorage),

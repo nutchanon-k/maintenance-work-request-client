@@ -50,3 +50,12 @@ export const deleteRequestTaskAPI = async (token, requestId) => {
     });
     return result;
 }
+
+export const updateIsAssignedAPI = async (token, body, requestId) => {
+    const result = await axios.patch(`http://localhost:8000/request-task/isAssigned/${requestId}`, body, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return result;
+}

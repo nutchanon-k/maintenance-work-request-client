@@ -1,13 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Calendar from '../../components/Calendar'
 import { CardMaintenance } from '../../components/Card';
+import { CardRequest } from '../../components/Card'
+import { useNavigate } from 'react-router-dom'
+import useRequestTaskStore from '../../store/RequestTaskStore'
+import useUserStore from '../../store/UserStore'
+import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
+
 
 const MaintenanceBacklog = () => {
-
+  const navigate = useNavigate()
+  
   const [selectedDate, setSelectedDate] = useState('');
 
-  console.log("test", selectedDate)
+  const token = useUserStore(state => state.token)
+  const maintenanceTaskBacklog = useMaintenanceTaskStore(state => state.maintenanceTaskBacklog)
+  const getMaintenanceTaskBacklog = useMaintenanceTaskStore(state => state.getMaintenanceTaskBacklog)
+  const resetCurrentMaintenanceTask = useMaintenanceTaskStore(state => state.resetCurrentMaintenanceTask)
+  const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask) 
+  
+  useEffect(() => {
+    getMaintenanceTaskBacklog(token)
+    // resetCurrentMaintenanceTask() 
+  }, [])
+
+  console.log(maintenanceTaskBacklog)
+  console.log('current naaaa', currentMaintenanceTask)
+  
+  
+  
+  
+  // console.log("test", selectedDate)
   return (
     <div className='flex flex-col  '>
       <div className='flex justify-between p-4 '>
@@ -37,11 +61,7 @@ const MaintenanceBacklog = () => {
       </div>
       {/* <div className="divider"></div> */}
       <div className='flex flex-1 flex-wrap p-4 gap-4'>
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
+        {maintenanceTaskBacklog.map((el) => <CardMaintenance key={el.id} maintenanceTask={el} />)}
       </div>
 
     </div>

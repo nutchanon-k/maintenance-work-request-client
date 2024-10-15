@@ -1,13 +1,14 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios from 'axios'
-import { createRequestTaskAPI, deleteRequestTaskAPI, editRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus } from '../api/RequestTask';
+import { createRequestTaskAPI, deleteRequestTaskAPI, editRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus, updateIsAssignedAPI } from '../api/RequestTask';
 import { toast } from 'react-toastify';
 
 
 
 const useRequestTaskStore = create(persist((set, get) => ({
     requestTasksInprogress: [],
+    requestTasKsSuccess: [],
     currentTask: null,
     loading : false,
 
@@ -23,7 +24,6 @@ const useRequestTaskStore = create(persist((set, get) => ({
     },
     getRequestTaskInprogress : async (token) => {
         try{
-            // set({requestTasksInprogress : []})
             const result = await getRequestTaskByStatus(token, "inProgress")
             set({requestTasksInprogress : result.data.data})
             return result
@@ -35,7 +35,7 @@ const useRequestTaskStore = create(persist((set, get) => ({
         try{
             set({currentTask : null})
             const result = await getRequestTaskAPI(token,requestId)  
-            console.log("test", result.data.data[0])  
+            // console.log("test", result.data.data[0])  
             set({currentTask : result.data.data}) 
             return result
         }catch(error){
@@ -68,7 +68,29 @@ const useRequestTaskStore = create(persist((set, get) => ({
     resetCurrentTask : () => {
         set({currentTask : null})
     },
+    
 
+
+    getRequestTaskSuccess : async (token) => {
+        try{
+            const result = await getRequestTaskByStatus(token, "success")
+            set({requestTasksSuccess : result.data.data})
+            return result
+        }catch(error){
+            console.log(error)
+        }
+    },
+
+    updateIsAssigned : async (token, body, requestId) => {
+        try{
+            const result = await updateIsAssignedAPI (token, body, requestId)
+              return result
+        }catch(error){
+            console.log(error)
+            toast.error(error.response.data.message)
+        }
+    },
+ 
 
 
   

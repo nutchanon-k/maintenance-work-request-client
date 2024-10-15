@@ -10,7 +10,7 @@ const AdminLayout = () => {
             <div className='overflow-hidden h-screen w-screen '>
                 <div className='flex flex-col h-full '>
                     <AdminHeader />
-                    <div className=' overflow-auto   '>
+                    <div className=' overflow-auto    '>
                         <Outlet/>
                     </div>
                 </div>

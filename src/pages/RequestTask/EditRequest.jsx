@@ -29,7 +29,8 @@ const EditRequest = () => {
 
 
   
-  
+  console.log("test data ",data)
+
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -43,9 +44,10 @@ const EditRequest = () => {
           body.append("status", data.status);
           if (image) {
               body.append("image", image)
-          }else  if (!oldImage) {
-              body.append("image", oldImage)
           }
+        //   else  if (!oldImage) {
+        //       body.append("image", oldImage)
+        //   }
           for (let [key, value] of body.entries()) {
               console.log(key, value)
           }

@@ -18,11 +18,13 @@ import CreateNewMaintenanceTask from "../pages/MaintenanceTask/CreateNewMaintena
 import ShowTaskBacklog from "../pages/MaintenanceTask/ShowTaskBacklog";
 import ShowTaskInProgress from "../pages/MaintenanceTask/ShowTaskInProgress";
 import FinishWorkForm from "../pages/MaintenanceTask/FinishWorkForm";
+import useMaintenanceTaskStore from "../store/MaintenanceTaskStore";
+
 
 const guestRouter = createBrowserRouter([
     { path: "/", element: <Login /> },
     { path: "*", element: <Navigate to="/" /> },
-
+    
 ]);
 
 const adminRouter = createBrowserRouter([
@@ -33,15 +35,15 @@ const adminRouter = createBrowserRouter([
             {path: "request-in-progress", element: <RequestInProgress />},
             {path: "request-success", element: <RequestSuccess />},
             {path: "create-request-task", element: <CreateNewRequest />},
-            {path: "show-request-task", element: <ShowRequestDetail />},
+            {path: "show-request-task/:id", element: <ShowRequestDetail />},
             {path: "edit-request-task", element: <EditRequest />},
-            {path: "maintenance-backlog", element: <MaintenanceBacklog />},
+            {path: `maintenance-backlog`, element: <MaintenanceBacklog />},
             {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
             {path : "maintenance-in-review", element: <MaintenanceInReview />},
             {path : "maintenance-success", element: <MaintenanceSuccess />},
             {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
-            {path : "show-task-backlog", element: <ShowTaskBacklog />},
-            {path : "show-task-inprogress", element: <ShowTaskInProgress />},
+            {path : "show-task-backlog/:id", element: <ShowTaskBacklog />},
+            {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
             {path : "finish-work-form", element: <FinishWorkForm />},
             {path : "manage-users", element: <ManageUsers />},
             {path: "*", element: <NotFound  />}, 
@@ -53,7 +55,8 @@ const adminRouter = createBrowserRouter([
 
 export default function AppRouter() {
     const user = useUserStore(state => state.user)
-
+    // const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask)
+    console.log('test router')
     const finalRouter = user ? adminRouter : guestRouter
     return (
         <RouterProvider router={finalRouter} />

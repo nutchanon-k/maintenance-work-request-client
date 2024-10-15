@@ -23,7 +23,7 @@ const AdminHeader = () => {
         <div className="flex items-center space-x-2">
           <div className="text-right">
             <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
-            <p className="text-sm text-gray-500">{user.role}</p>
+            <p className="text-sm text-gray-500">{user.role + " " + user.level}</p>
           </div>
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import useRequestTaskStore from '../../store/RequestTaskStore'
 import { NoPhotoIcon } from '../../icons/Icons'
@@ -9,22 +9,31 @@ import useUserStore from '../../store/UserStore'
 
 const ShowRequestDetail = () => {
     const navigate = useNavigate()
+    const { id } = useParams()
+    console.log("id from params", id)
 
     const currentTask = useRequestTaskStore(state => state.currentTask)
     const deleteRequestTask = useRequestTaskStore(state => state.deleteRequestTask)
     const resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
     const token = useUserStore(state => state.token)
+    const getRequestTask = useRequestTaskStore(state => state.getRequestTask)
+    const user = useUserStore(state => state.user)
 
 
+    console.log(user.role, user.level)
+    const role = user.role
+    const level = user.level
+    console.log(currentTask)
 
     const [reqTask, setReqTask] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
 
 
-
-
-
+    // เผื่อข้อมูล update ใหม่ เลยให้ดึงข้อมูลใหม่อีกครั้งตอนเริ่มต้น
+    useEffect(() => {
+        getRequestTask(token, id)
+    }, [])
 
 
     useEffect(() => {
@@ -33,7 +42,7 @@ const ShowRequestDetail = () => {
         }
     }, [currentTask])
 
-    console.log(reqTask)
+    // console.log(reqTask)
 
     const translateTime = (time) => {
         const isoDate = time
@@ -45,9 +54,10 @@ const ShowRequestDetail = () => {
         return formattedDate
     }
 
-    console.log(reqTask.id)
+    // console.log(reqTask.id)
     const handleDelete = async () => {
-        const result = await deleteRequestTask(reqTask.id);
+        const result = await deleteRequestTask(token, reqTask.id);
+        // console.log(reqTask.id)
         console.log(result);
         if (!result) {
             return;
@@ -65,13 +75,7 @@ const ShowRequestDetail = () => {
     };
 
     const handleBack = () => {
-        const isConfirm = confirm("Are you sure you want to delete this request?")
-        console.log(isConfirm)
-        if (!isConfirm) {
-            return
-        }
         resetCurrentTask();
-
         console.log('Back');
     };
 
@@ -123,9 +127,15 @@ const ShowRequestDetail = () => {
                                 </p>
                                 <p className="text-sm flex items-center">
                                     <strong>Status: </strong>
-                                    <span className="ml-2 flex items-center">
-                                        <span className="w-3 h-3 rounded-full bg-purple-500 mr-2"></span>{' '}{reqTask?.status}
-                                    </span>
+                                    {reqTask?.status === "inProgress" ?
+                                        <span className="ml-2 flex items-center">
+                                            <span className="w-3 h-3 rounded-full bg-purple-500 mr-2"></span>{' '}{reqTask?.status}
+                                        </span>
+                                        :
+                                        <span className="ml-2 flex items-center">
+                                            <span className="w-3 h-3 rounded-full bg-green-500 mr-2"></span>{' '}{reqTask?.status}
+                                        </span>
+                                    }
                                 </p>
                                 <p className="text-sm">
                                     <strong>Assigned: </strong> {reqTask?.isAssigned ? <span className="text-primary">Assigned</span> : <span className="text-secondary">Waiting..</span>}
@@ -138,15 +148,16 @@ const ShowRequestDetail = () => {
                         {/* Right section - Image and buttons */}
                         <div className="w-1/2 flex flex-col items-end space-y-4">
                             {/* Delete button */}
-                            <button
-                                className="btn btn-outline btn-error w-[150px]  "
-                                onClick={() => {
-                                    setShowConfirm(true)
-                                    document.getElementById('confirm_delete_modal').showModal()
-                                }}
-                            >
-                                Delete Request
-                            </button>
+                            {reqTask.status === "inProgress" ?
+                                <button
+                                    className="btn btn-outline btn-error w-[150px]  "
+                                    onClick={() => {
+                                        setShowConfirm(true)
+                                        document.getElementById('confirm_delete_modal').showModal()
+                                    }}
+                                >
+                                    Delete Request
+                                </button> : ""}
                             <div
                                 className="relative w-72 h-48 border rounded-lg overflow-hidden hover:cursor-pointer hover:opacity-80 active:transform active:scale-95"
                                 onClick={() => {
@@ -164,18 +175,61 @@ const ShowRequestDetail = () => {
                                     <NoPhotoIcon className="w-full h-full object-cover" />}
                             </div>
                         </div>
+                    </div>
+                    {/* Check status and choose Buttons */}
+                    {reqTask.status === "inProgress" ?
 
-                    </div>
-                    <div className=' flex justify-between w-full max-w-5xl'>
-                        {/* Back button */}
-                        <Link to={'/request-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
-                            Back
-                        </Link>
-                        {/* Edit button */}
-                        <Link to={`/edit-request-task`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
-                            Edit
-                        </Link>
-                    </div>
+                        role === "admin" ?
+                            <div className=' flex justify-between w-full max-w-5xl'>
+                                {/* Back button */}
+                                <Link to={'/request-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                                    Back
+                                </Link>
+                                {/* Assign button */}
+                                <Link to={`/create-maintenance-task`} className="btn btn-primary w-[250px] mt-4" >
+                                    Assign
+                                </Link>
+                                {/* Edit button */}
+                                <Link to={`/edit-request-task`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
+                                    Edit
+                                </Link>
+                            </div>
+                            : role === "maintenance" && (level === 'manager' || level === 'leader') ?
+                                <div className=' flex justify-between w-full max-w-5xl'>
+                                    {/* Back button */}
+                                    <Link to={'/request-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                                        Back
+                                    </Link>
+                                    {/* Assign button */}
+                                    <Link to={`/create-maintenance-task`} className="btn btn-primary w-[250px] mt-4" >
+                                        Assign
+                                    </Link>
+                                </div>
+                                : role === "maintenance" && level === 'staff' ?
+                                    <div className=' flex justify-between w-full max-w-5xl'>
+                                        {/* Back button */}
+                                        <Link to={'/request-in-progress'} className="btn btn-outline w-[250px] mt-4" onClick={handleBack}>
+                                            Back
+                                        </Link>
+                                    </div>
+                                    :
+                                    <div className=' flex justify-between w-full max-w-5xl'>
+                                        {/* Back button */}
+                                        <Link to={'/request-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                                            Back
+                                        </Link>
+                                        {/* Edit button */}
+                                        <Link to={`/edit-request-task`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
+                                            Edit
+                                        </Link>
+                                    </div>
+                        :
+                        <div className=' flex justify-between w-full max-w-5xl'>
+                            <Link to={'/request-success'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                                Back
+                            </Link>
+                        </div>
+                    }
                 </div>
             </div>
             {/* modal */}
@@ -214,7 +268,6 @@ const ShowRequestDetail = () => {
                     {showConfirm &&
                         <div>
                             <h3 className="font-bold text-lg text-error">Are you sure you want to delete this request?</h3>
-                            <p className="py-4">This action cannot be undone.</p>
                             <div className="modal-action">
                                 <button
                                     className="btn btn-error btn-outline"
@@ -225,8 +278,8 @@ const ShowRequestDetail = () => {
                                     Delete
                                 </button>
                             </div>
-
-                        </div>}
+                        </div>
+                    }
                 </div>
             </dialog>
         </>
