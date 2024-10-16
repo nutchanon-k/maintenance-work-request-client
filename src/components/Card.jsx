@@ -66,7 +66,9 @@ export function CardMaintenance(props) {
         <Link
             className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all"
             onClick={handleClick}
-            to={`/show-maintenance-task/${maintenanceTask?.id}`}
+            to={ 
+                maintenanceTask.status === "inReview" ? 
+                `/show-maintenance-task/${maintenanceTask?.id}` : `/show-maintenance-task/${maintenanceTask?.id}`}
             id={maintenanceTask?.id}
         >
             <div className='flex flex-col   '>

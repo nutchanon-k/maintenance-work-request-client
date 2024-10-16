@@ -4,6 +4,7 @@ import useUserStore from '../../store/UserStore'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { NoPhotoIcon } from '../../icons/Icons'
+import RequestDetails from '../../components/RequestDetails'
 // import CardMaintenance from '../../components/Card'
 
 
@@ -44,10 +45,6 @@ const ShowMaintenanceTask = () => {
       setNote(currentMaintenanceTask[0].note)
     }
   }, [currentMaintenanceTask])
-
-
-
-
   const translateTime = (time) => {
     const isoDate = time
     const date = new Date(isoDate);
@@ -57,6 +54,10 @@ const ShowMaintenanceTask = () => {
     });
     return formattedDate
   }
+
+
+
+
 
   const handleAccept = async () => {
     const response = await updateMaintenanceTask(token, { status: 'inProgress' }, mTask.id)
@@ -119,7 +120,7 @@ const ShowMaintenanceTask = () => {
           <div className="flex justify-between w-full max-w-5xl">
 
             {/* Left section - Request details */}
-            <div className="w-1/2 space-y-4">
+            {/* <div className="w-1/2 space-y-4">
               <div className='flex gap-2'>
                 {location === "Factory1" ? <div className="badge badge-primary badge-outline">{location}</div> : <div className="badge badge-warning badge-outline">{location}</div>}
                 {typeOfFailure === "Mechanical" ? <div className="badge badge-primary">{typeOfFailure}</div> : typeOfFailure === "Electrical" ? <div className="badge badge-secondary">{typeOfFailure}</div> : <div className="badge badge-info">{typeOfFailure}</div>}
@@ -174,7 +175,8 @@ const ShowMaintenanceTask = () => {
                       </p>
                 }
               </div>
-            </div>
+            </div> */}
+            <RequestDetails mTask={mTask} />
 
 
             {/* Right section - Image and buttons */}

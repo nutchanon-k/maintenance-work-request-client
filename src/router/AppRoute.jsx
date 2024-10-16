@@ -20,6 +20,7 @@ import ShowTaskInProgress from "../pages/MaintenanceTask/ShowTaskInProgress";
 import FinishWorkForm from "../pages/MaintenanceTask/FinishWorkForm";
 import useMaintenanceTaskStore from "../store/MaintenanceTaskStore";
 import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
+import ShowTaskInReview from "../pages/MaintenanceTask/ShowTaskInReview";
 
 
 const guestRouter = createBrowserRouter([
@@ -45,6 +46,7 @@ const adminRouter = createBrowserRouter([
             {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
             {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
             {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
+            {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
             {path : "finish-work-form/:id", element: <FinishWorkForm />},
             {path : "manage-users", element: <ManageUsers />},
             {path: "*", element: <NotFound  />}, 

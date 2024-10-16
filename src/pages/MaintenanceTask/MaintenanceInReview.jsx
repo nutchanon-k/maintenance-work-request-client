@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Calendar from '../../components/Calendar'
 import { CardMaintenance } from '../../components/Card';
+import useUserStore from '../../store/UserStore';
+import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
 
 const MaintenanceInReview = () => {
   const [selectedDate, setSelectedDate] = useState('');
 
-  console.log("test", selectedDate)
+  const token = useUserStore(state => state.token)
+  const maintenanceTaskInReview = useMaintenanceTaskStore(state => state.maintenanceTaskInReview)
+  const getMaintenanceTaskInReview = useMaintenanceTaskStore(state => state.getMaintenanceTaskInReview)
+
+
+  useEffect(() => {
+    getMaintenanceTaskInReview(token)
+  }, [])
+  console.log(maintenanceTaskInReview)
+  // console.log("test", selectedDate)
   return (
     <div className='flex flex-col  '>
       <div className='flex justify-between p-4 '>
@@ -36,11 +47,7 @@ const MaintenanceInReview = () => {
       </div>
       {/* <div className="divider"></div> */}
       <div className='flex flex-1 flex-wrap gap-4 p-4 '>
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
+        {maintenanceTaskInReview.map((el) => (<CardMaintenance key={el.id} maintenanceTask={el} />))}
       </div>
 
     </div>
