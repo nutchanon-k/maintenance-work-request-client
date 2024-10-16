@@ -37,4 +37,23 @@ export const deleteMaintenanceTaskAPI = async (token, maintenanceId) => {
     })
     return result;
 }
+
+
+export const updateMaintenanceTaskAPI = async (token, body, maintenanceId) => {
+    const result = await axios.patch(`http://localhost:8000/maintenance-task/${maintenanceId}`, body, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return result;
     
+}
+
+export const getTypeOfRootCausesAPI = async (token, typeOfFailureId, machineTypeId) => {
+    const result = await axios.get(`http://localhost:8000/maintenance-task/data-type-of-root-cause?typeOfFailureId=1&machineTypeId=1`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return result;
+}

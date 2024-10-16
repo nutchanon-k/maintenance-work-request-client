@@ -190,7 +190,7 @@ const ShowRequestDetail = () => {
                                     Assign
                                 </Link>
                                 {/* Edit button */}
-                                <Link to={`/edit-request-task`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
+                                <Link to={`/edit-request-task/${id}`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
                                     Edit
                                 </Link>
                             </div>
@@ -219,7 +219,7 @@ const ShowRequestDetail = () => {
                                             Back
                                         </Link>
                                         {/* Edit button */}
-                                        <Link to={`/edit-request-task`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
+                                        <Link to={`/edit-request-task/${id}`} className="btn btn-secondary w-[150px] mt-4 " onClick={handleEdit}>
                                             Edit
                                         </Link>
                                     </div>

@@ -66,24 +66,26 @@ export function CardMaintenance(props) {
 
     return (
         <Link
-            className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all" 
+            className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all"
             onClick={handleClick}
-            to={`/show-task-backlog/${maintenanceTask?.id}`}
+            to={`/show-maintenance-task/${maintenanceTask?.id}`}
             id={maintenanceTask?.id}
         >
-            <div className="card-body">
-                <div className='flex justify-between'>
-                {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
-                {typeOfFailure === "Mechanical"? <div className="badge badge-primary">{typeOfFailure}</div> :typeOfFailure === "Electrical"? <div className="badge badge-secondary">{typeOfFailure}</div> : <div className="badge badge-info">{typeOfFailure}</div>}
+            <div className='flex flex-col   '>
+                <div className="card-body">
+                    <div className='flex justify-between'>
+                        {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
+                        {typeOfFailure === "Mechanical" ? <div className="badge badge-primary">{typeOfFailure}</div> : typeOfFailure === "Electrical" ? <div className="badge badge-secondary">{typeOfFailure}</div> : <div className="badge badge-info">{typeOfFailure}</div>}
+                    </div>
+                    <h2 className="card-title"><span className='font-bold'>Maintenance Task ID. </span>{`${maintenanceTask?.id}`}</h2>
+                    <p className='text-sm text-gray-500 font-b'><span className='font-bold'>Machine ID. </span>{`${maintenanceTask?.machineId}`}</p>
+                    <p className='text-sm text-gray-500'><span className='font-bold'>Machine Name. </span>{`${maintenanceTask?.requestTask?.machine?.name}`}</p>
+                    <p className='text-sm text-gray-500'><span className='font-bold'>Assigned to. </span>{`${maintenanceTask?.employee?.firstName} ${maintenanceTask?.employee?.lastName}`}</p>
                 </div>
-                <h2 className="card-title"><span className='font-bold'>Maintenance Task ID. </span>{`${maintenanceTask?.id}`}</h2>
-                <p className='text-sm text-gray-500 font-b'><span className='font-bold'>Machine ID. </span>{`${maintenanceTask?.machineId}`}</p>
-                <p className='text-sm text-gray-500'><span className='font-bold'>Machine Name. </span>{`${maintenanceTask?.requestTask?.machine?.name}`}</p>
-                <p className='text-sm text-gray-500'><span className='font-bold'>Assigned to. </span>{`${maintenanceTask?.employee?.firstName} ${maintenanceTask?.employee?.lastName}`}</p>
+                <figure>
+                    {maintenanceTask?.requestTask?.image ? <img src={maintenanceTask?.requestTask?.image} alt="machine" className='w-full' /> : <PicMachineDefault className='w-full' />}
+                </figure>
             </div>
-            <figure>
-            {maintenanceTask?.requestTask?.image ? <img src={maintenanceTask?.requestTask?.image} alt="machine" className='w-full' /> : <PicMachineDefault className='w-full' />}
-            </figure>
         </Link>
     )
 }

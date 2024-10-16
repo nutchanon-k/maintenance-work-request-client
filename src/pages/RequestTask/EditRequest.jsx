@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import useUserStore from '../../store/UserStore'
 import { getDataMachine } from '../../api/RequestTask'
 import { toast } from 'react-toastify'
@@ -10,12 +10,14 @@ import { useNavigate } from 'react-router-dom'
 const EditRequest = () => {
   // navigate
   const navigate = useNavigate()
+  const { id } = useParams()
 
   // from store
   const user = useUserStore(state => state.user)
   const token = useUserStore(state => state.token)
   const currentTask = useRequestTaskStore(state => state.currentTask)
-  const editRequestTask = useRequestTaskStore(state => state.editRequestTask) 
+  const editRequestTask = useRequestTaskStore(state => state.editRequestTask)
+  const getRequestTask = useRequestTaskStore(state => state.getRequestTask) 
 
   
   // set state
@@ -70,13 +72,17 @@ const EditRequest = () => {
 
   // set state โดยใช้ข้อมูลจาก currentTask จาก store
   useEffect(() => {
-      if (currentTask) {
-          setData(currentTask[0])
-          setMachineId(currentTask[0].machineId)
-          setOldImage(currentTask[0].image)  
-          setFaultSymptoms(currentTask[0].faultSymptoms)
-      }
+    getRequestTask(token, id)
   }, [])
+
+  useEffect(() => {
+    if (currentTask) {
+        setData(currentTask[0])
+        setMachineId(currentTask[0].machineId)
+        setOldImage(currentTask[0].image)  
+        setFaultSymptoms(currentTask[0].faultSymptoms)
+    }
+  }, [currentTask])
 
 
   // ดึงข้อมูลเครื่องจักรมาจาก API เพื่อ autofill
@@ -279,7 +285,7 @@ const EditRequest = () => {
                       </div> 
                       :
                       <div className="flex justify-between mt-6">
-                          <Link to="/show-request-task" className="btn btn-outline btn-error w-[150px]">
+                          <Link to={`/show-request-task/${id}`} className="btn btn-outline btn-error w-[150px]">
                               Cancel 
                           </Link>
                           <button type="submit" className="btn btn-secondary w-[150px]">

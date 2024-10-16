@@ -5,7 +5,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { RiProgress2Line, RiProgress4Line, RiProgress6Line, RiProgress8Line } from "react-icons/ri";
 import { VscRequestChanges } from "react-icons/vsc";
 import { RiUserSettingsLine } from "react-icons/ri";
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 const AdminSidebar = () => {
   const [isTaskExpanded, setIsTaskExpanded] = useState(false);
@@ -68,12 +68,17 @@ const AdminSidebar = () => {
 
             {/* Sub-menu (expanded task options) */}
             <div className={`ml-3 mt-2 space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${isRequestTaskExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-              <Link className="flex items-center py-1 text-gray-600 hover:text-gray-800 hover:bg-base-200  rounded transition-colors duration-200"
+              <NavLink 
+                end
+                // className="flex items-center py-1 text-gray-600 hover:text-gray-800 hover:bg-base-200  rounded transition-colors duration-200"
+                className={({isActive}) => isActive 
+                ? 'flex items-center py-1 text-secondary hover:text-gray-800 hover:bg-base-200  rounded transition-colors duration-200'
+                : 'flex items-center py-1 text-gray-600 hover:text-gray-800 hover:bg-base-200  rounded transition-colors duration-200'}
                 to={"/request-in-progress"}
               >
                 <RiProgress4Line size={18} className="mr-2" />
                 {isSidebarOpen && <span>In Progress</span>}
-              </Link>
+              </NavLink>
 
               <Link className="flex items-center py-1 text-gray-600 hover:text-gray-800 hover:bg-base-200  rounded transition-colors duration-200"
                 to={"/request-success"}

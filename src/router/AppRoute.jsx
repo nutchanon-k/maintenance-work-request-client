@@ -15,10 +15,11 @@ import CreateNewRequest from "../pages/RequestTask/CreateNewRequest";
 import ShowRequestDetail from "../pages/RequestTask/ShowRequestDetail";
 import EditRequest from "../pages/RequestTask/EditRequest";
 import CreateNewMaintenanceTask from "../pages/MaintenanceTask/CreateNewMaintenanceTask";
-import ShowTaskBacklog from "../pages/MaintenanceTask/ShowTaskBacklog";
+// import ShowTaskBacklog from "../pages/MaintenanceTask/ShowMaintenanceTask";
 import ShowTaskInProgress from "../pages/MaintenanceTask/ShowTaskInProgress";
 import FinishWorkForm from "../pages/MaintenanceTask/FinishWorkForm";
 import useMaintenanceTaskStore from "../store/MaintenanceTaskStore";
+import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
 
 
 const guestRouter = createBrowserRouter([
@@ -36,15 +37,15 @@ const adminRouter = createBrowserRouter([
             {path: "request-success", element: <RequestSuccess />},
             {path: "create-request-task", element: <CreateNewRequest />},
             {path: "show-request-task/:id", element: <ShowRequestDetail />},
-            {path: "edit-request-task", element: <EditRequest />},
+            {path: "edit-request-task/:id", element: <EditRequest />},
             {path: `maintenance-backlog`, element: <MaintenanceBacklog />},
             {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
             {path : "maintenance-in-review", element: <MaintenanceInReview />},
             {path : "maintenance-success", element: <MaintenanceSuccess />},
             {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
-            {path : "show-task-backlog/:id", element: <ShowTaskBacklog />},
+            {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
             {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
-            {path : "finish-work-form", element: <FinishWorkForm />},
+            {path : "finish-work-form/:id", element: <FinishWorkForm />},
             {path : "manage-users", element: <ManageUsers />},
             {path: "*", element: <NotFound  />}, 
         ]

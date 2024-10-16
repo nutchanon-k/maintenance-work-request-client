@@ -1,10 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Calendar from '../../components/Calendar'
 import { CardMaintenance } from '../../components/Card';
+import useUserStore from '../../store/UserStore';
+import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
 
 const MaintenanceInProgress = () => {
   const [selectedDate, setSelectedDate] = useState('');
+
+  const token = useUserStore(state => state.token)
+  const maintenanceTaskInprogress = useMaintenanceTaskStore(state => state.maintenanceTaskInprogress)
+  const getMaintenanceTaskInProgress = useMaintenanceTaskStore(state => state.getMaintenanceTaskInProgress)
+  
+
+
+
+  useEffect(() => { 
+    getMaintenanceTaskInProgress(token)
+  }, [])
 
   console.log("test", selectedDate)
   return (
@@ -36,11 +49,7 @@ const MaintenanceInProgress = () => {
       </div>
       {/* <div className="divider"></div> */}
       <div className='flex flex-1 flex-wrap gap-4 p-4 '>
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
-        <CardMaintenance />
+        {maintenanceTaskInprogress.map(el => (<CardMaintenance key={el.id} maintenanceTask={el} />))}
       </div>
 
     </div>
