@@ -47,8 +47,6 @@ export function CardRequest(props) {
         </Link>
     )
 }
-
-
 export function CardMaintenance(props) {
     const { maintenanceTask } = props
     const getMaintenanceTask = useMaintenanceTaskStore(state => state.getMaintenanceTask)
@@ -89,8 +87,6 @@ export function CardMaintenance(props) {
         </Link>
     )
 }
-
-
 export function CardUser() {
     return (
         <div className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all">
@@ -120,7 +116,6 @@ export function CardUser() {
         </div>
     )
 }
-
 export function CardToChooseUser(props) {
     const { member } = props
     return (

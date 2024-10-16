@@ -101,8 +101,9 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
 
     updateMaintenanceTask : async (token, body, maintenanceId) => {
         try{
+            console.log("body from store",token,body, maintenanceId)
         const result = await updateMaintenanceTaskAPI(token, body, maintenanceId)
-        set(state=>({maintenanceTaskBacklog : state.maintenanceTaskBacklog.filter(task => task.id !== maintenanceId)}))
+        // set(state=>({maintenanceTaskBacklog : state.maintenanceTaskBacklog.filter(task => task.id !== maintenanceId)}))
         toast.success(result.data.message)
         return result.data
         
@@ -122,6 +123,8 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
             console.log(error)
         }
     }
+
+
 
  
  

@@ -6,30 +6,6 @@ import { toast } from 'react-toastify'
 import { CloseIcon, NoPhotoIcon, UploadIcon } from '../../icons/Icons'
 
 const FinishWorkForm = () => {
-    const [equipmentOption, setEquipmentOption] = useState('noEquipment');
-   
-
-    const handleEquipmentChange = (e) => {
-        setEquipmentOption(e.target.value);
-    };
-
-            // requestId, 
-            // employeeId, 
-            // machineId, 
-            // typeOfFailureId, 
-            // typeOfRootCauseId,
-            // rootCauseDetail,
-            // operationDetails ,
-            // preventingRecurrence,
-            // equipmentUsed,
-            // additionalSuggestions,
-            // finishTime,
-            // acceptTime,
-            // isRejected,
-            // rejectReason,
-            // status,
-            // note
-
 
     const navigate = useNavigate()
     const { id } = useParams()
@@ -39,21 +15,22 @@ const FinishWorkForm = () => {
     const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask)
     const getTypeOfRootCauses = useMaintenanceTaskStore(state => state.getTypeOfRootCauses)
     const typeOfRootCauses = useMaintenanceTaskStore(state => state.typeOfRootCauses)
-
+    const [equipmentOption, setEquipmentOption] = useState('noEquipment');
 
     const [data, setData] = useState({
-        typeOfRootCauseId : null,
-        rootCauseDetail : null,
-        operationDetails : null,
-        preventingRecurrence : null,
-        equipmentUsed : null,
-        additionalSuggestions : null,
-        finishTime : new Date().toISOString()
+        typeOfRootCauseId: null,
+        rootCauseDetail: null,
+        operationDetails: null,
+        preventingRecurrence: null,
+        equipmentUsed: null,
+        additionalSuggestions: null,
+        finishTime: new Date().toISOString()
     })
+
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const [mTask, setMTask] = useState(null)
-    // const [typeOfFailure, setTypeOfFailure] = useState(null)
+   
 
 
     useEffect(() => {
@@ -68,10 +45,48 @@ const FinishWorkForm = () => {
         }
     }, [currentMaintenanceTask])
 
+    const handleChange = (e) => {
+        setData({ ...data, [e.target.name]: e.target.value });
+    };
+    const handleEquipmentChange = (e) => {
+        setEquipmentOption(e.target.value);
+        setData({ ...data, equipmentUsed: e.target.value });
+    };
 
-
-    console.log(data.finishTime)
     
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            console.log("submit")
+            setLoading(true)
+            const body = new FormData();
+            body.append("typeOfRootCauseId", data.typeOfRootCauseId);
+            body.append("rootCauseDetail", data.rootCauseDetail);
+            body.append("operationDetails", data.operationDetails);
+            body.append("preventingRecurrence", data.preventingRecurrence);
+            body.append("equipmentUsed", equipmentOption);
+            body.append("additionalSuggestions", data.additionalSuggestions);
+            body.append("finishTime", data.finishTime);
+            body.append("status", "inReview");
+            if (image) {
+                body.append("image", image)
+            }
+            for (let [key, value] of body.entries()) {
+                console.log(key, value)
+            }
+            const result = await updateMaintenanceTask(token, body, mTask.id)
+            toast.success(result.data.message)
+            navigate('/maintenance-in-review')
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+
+    };
+
+
     return (
         <div className='flex flex-col  '>
             {/* header */}
@@ -93,19 +108,32 @@ const FinishWorkForm = () => {
                     </h1>
                 </div>
             </div>
+
+            {/* form */}
             <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md w-[600px]">
                 <h1 className="text-2xl font-bold mb-6">Maintenance Report</h1>
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSubmit}>
                     {/* Root Cause Type */}
                     <div>
                         <label className="block text-gray-700 font-semibold mb-2">
                             Root cause type <span className="text-red-500">*</span>
                         </label>
-                        <select className="select select-bordered w-full">
+                        <select
+                            className="select select-bordered w-full"
+                            name="typeOfRootCauseId"
+                            onChange={handleChange}
+
+                        >
                             <option disabled selected>
                                 Please select type of root cause
                             </option>
-                            {typeOfRootCauses?.map((el) => (<option key={el.id} value={el.id}>{el.details}</option>
+                            {typeOfRootCauses?.map((el) => (
+                                <option
+                                    key={el.id}
+                                    value={el.id}
+                                >
+                                    {el.details}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -115,7 +143,13 @@ const FinishWorkForm = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                             Root cause details
                         </label>
-                        <textarea className="textarea textarea-bordered w-full" placeholder="Input text here"></textarea>
+                        <textarea
+                            className="textarea textarea-bordered w-full"
+                            placeholder="Input text here"
+                            name="rootCauseDetail"
+                            onChange={handleChange}
+                        >
+                        </textarea>
                     </div>
 
                     {/* Operational details */}
@@ -123,7 +157,15 @@ const FinishWorkForm = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                             Operational details <span className="text-red-500">*</span>
                         </label>
-                        <textarea className="textarea textarea-bordered w-full" placeholder="Input text here"></textarea>
+                        <textarea
+                            className="textarea textarea-bordered w-full"
+                            placeholder="Input text here"
+                            name="operationDetails"
+                            value={data.operationDetails}
+                            onChange={handleChange}
+                            required
+                        >
+                        </textarea>
                     </div>
 
                     {/* Preventing recurrence */}
@@ -131,7 +173,15 @@ const FinishWorkForm = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                             Preventing recurrence
                         </label>
-                        <textarea className="textarea textarea-bordered w-full" placeholder="Input text here"></textarea>
+                        <textarea
+                            className="textarea textarea-bordered w-full"
+                            placeholder="Input text here"
+                            name='preventingRecurrence'
+                            value={data.preventingRecurrence}
+                            onChange={handleChange}
+                        >
+
+                        </textarea>
                     </div>
 
                     {/* Additional suggestions */}
@@ -139,7 +189,14 @@ const FinishWorkForm = () => {
                         <label className="block text-gray-700 font-semibold mb-2">
                             Additional suggestions
                         </label>
-                        <textarea className="textarea textarea-bordered w-full" placeholder="Input text here"></textarea>
+                        <textarea
+                            className="textarea textarea-bordered w-full"
+                            placeholder="Input text here"
+                            name="additionalSuggestions"
+                            value={data.additionalSuggestions}
+                            onChange={handleChange}
+                        >
+                        </textarea>
                     </div>
 
                     {/* List of equipment used */}
@@ -170,7 +227,13 @@ const FinishWorkForm = () => {
                             </label>
                         </div>
                         {equipmentOption === 'useEquipment' && (
-                            <input type="text" className="input input-bordered w-full mt-2" placeholder="Input here" />
+                            <input
+                                type="text"
+                                className="input input-bordered w-full mt-2"
+                                placeholder="Input here"
+                                name="equipmentUsed"
+                                onChange={handleChange}
+                            />
                         )}
                     </div>
 
@@ -211,16 +274,22 @@ const FinishWorkForm = () => {
                         </div>
                     </div>
 
-                    {/* Buttons */}
+
+                    {/* Buttons & loading */}
+                    {loading ?
+                      <div className="flex justify-center mt-6">
+                          <span className="loading loading-bars loading-lg"></span>
+                      </div> 
+                      :
                     <div className="flex justify-between mt-6">
                         <Link to={`/show-maintenance-task/${id}`} type="button" className="btn btn-outline w-[150px]">
                             Back
                         </Link>
-                        <button type="submit" className="btn btn-secondary
-                     w-[150px]">
+                        <button type="submit" className="btn btn-secondary w-[150px]">
                             Submit
                         </button>
                     </div>
+                    }
                 </form>
             </div>
         </div>

@@ -50,7 +50,7 @@ export const updateMaintenanceTaskAPI = async (token, body, maintenanceId) => {
 }
 
 export const getTypeOfRootCausesAPI = async (token, typeOfFailureId, machineTypeId) => {
-    const result = await axios.get(`http://localhost:8000/maintenance-task/data-type-of-root-cause?typeOfFailureId=1&machineTypeId=1`, {
+    const result = await axios.get(`http://localhost:8000/maintenance-task/data-type-of-root-cause?typeOfFailureId=${typeOfFailureId}&machineTypeId=${machineTypeId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
