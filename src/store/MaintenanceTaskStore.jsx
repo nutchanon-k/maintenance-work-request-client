@@ -1,19 +1,31 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import { toast } from 'react-toastify';
-import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByStatusAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI } from '../api/MaintenanceTask';
+import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI } from '../api/MaintenanceTask';
 
 const useMaintenanceTaskStore = create(persist((set, get) => ({
     maintenanceTaskBacklog: [],
     maintenanceTaskInprogress: [],
     maintenanceTaskInReview: [],
     maintenanceTaskSuccess: [],
+    maintenanceTaskByRequestId :[],
     currentMaintenanceTask: null,
     typeOfRootCauses: null,
     loading : false,
 
 
-
+    clearAllMaintenanceStore : () => {
+        set({
+            maintenanceTaskBacklog : [], 
+            maintenanceTaskInprogress : [], 
+            maintenanceTaskInReview : [], 
+            maintenanceTaskSuccess : [], 
+            maintenanceTaskByRequestId :[],
+            currentMaintenanceTask : null,
+            typeOfRootCauses : null,
+            loading : false,
+        })
+    },
 
     createMaintenanceTask: async (token,body) => {
         try{
@@ -72,6 +84,16 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
         }
     },
 
+    getMaintenanceTaskForCheckAllSuccess : async (token, requestId) => {
+        try{
+            const result = await getMaintenanceTaskByRequestIdAPI(token, requestId)
+            set({maintenanceTaskByRequestId : result.data.data})
+            return result.data
+        }catch(error){
+            console.log(error)
+        }
+    },
+
     resetCurrentMaintenanceTask : () => {
         set({currentMaintenanceTask: null})
     },
@@ -104,7 +126,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
             console.log("body from store",token,body, maintenanceId)
         const result = await updateMaintenanceTaskAPI(token, body, maintenanceId)
         // set(state=>({maintenanceTaskBacklog : state.maintenanceTaskBacklog.filter(task => task.id !== maintenanceId)}))
-        toast.success(result.data.message)
+        // toast.success(result.data.message)
         return result.data
         
     }catch(error){
@@ -123,16 +145,6 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
             console.log(error)
         }
     }
-
-
-
- 
- 
-
-
-  
-
-  
 
 
   }),{

@@ -75,30 +75,40 @@ const RequestDetails = (props) => {
                                 <strong>Status: </strong><span className="w-3 h-3 rounded-full bg-green-500 mx-2"></span>{' '}{mTask?.status}
                             </p>
                 }
+                {mTask?.isRejected ?
+                    <>
+                        <p className="text-sm text-error">
+                            <strong>Reject: </strong> {mTask?.isRejected}
+                        </p>
+                        <p className="text-sm text-error">
+                            <strong>Reject reason: </strong> {mTask?.note}
+                        </p>
+                    </>
+                    :
+                    <></>
+                }
                 {mTask?.status === "inReview" || mTask?.status === "success" ?
                     <>
                         <p className="text-sm">
                             <strong>Root cause type: </strong> {mTask?.typeOfRootCause?.details}
                         </p>
                         <p className="text-sm">
-                            <strong>Root cause details: </strong> {mTask?.rootCauseDetail}
+                            <strong>Root cause details: </strong> {mTask?.rootCauseDetail !== "null" ? mTask?.rootCauseDetail : "-"}
+                        </p>
+
+                        <p className="text-sm">
+                            <strong>Operation details: </strong> {mTask?.operationDetails !== "null" ? mTask?.operationDetails : "-"}
                         </p>
                         <p className="text-sm">
-                            <strong>Root cause details: </strong> {mTask?.rootCauseDetail}
+                            <strong>Preventing Recurrence: </strong> {mTask?.preventingRecurrence !== "null" ? mTask?.preventingRecurrence : "-"}
                         </p>
                         <p className="text-sm">
-                            <strong>Operation details: </strong> {mTask?.operationDetails}
-                        </p>
-                        <p className="text-sm">
-                            <strong>Preventing Recurrence: </strong> {mTask?.preventingRecurrence}
-                        </p>
-                        <p className="text-sm">
-                            <strong>Additional suggestions: </strong> {mTask?.additionalSuggestions}
+                            <strong>Additional suggestions: </strong> {mTask?.additionalSuggestions !== "null" ? mTask?.additionalSuggestions : "-"}
                         </p>
                     </>
                     :
                     <></>
-                    }
+                }
 
 
             </div>

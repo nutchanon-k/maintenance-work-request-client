@@ -11,13 +11,12 @@ const RequestSuccess = () => {
   const token = useUserStore(state => state.token)
   const getRequestTaskSuccess = useRequestTaskStore(state => state.getRequestTaskSuccess)
   const requestTasksSuccess = useRequestTaskStore(state => state.requestTasksSuccess)
-  const resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
+  
 
   const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
     getRequestTaskSuccess(token)
-    resetCurrentTask()
   }, [])
   console.log(requestTasksSuccess)
   // console.log("test",selectedDate)
@@ -42,8 +41,8 @@ const RequestSuccess = () => {
         </div>
       </div>
       {/* <div className="divider"></div> */}
-      <div className='flex flex-1 flex-wrap gap-4 p-4 '>
-        {requestTasksSuccess.map((el) => (<CardRequest key={el.id} ReqTask = {el} />))}
+      <div className='flex flex-1 flex-wrap gap-4 p-4 justify-evenly '>
+        {requestTasksSuccess?.map((el) => (<CardRequest key={el.id} ReqTask = {el} />))}
       </div>
 
     </div>

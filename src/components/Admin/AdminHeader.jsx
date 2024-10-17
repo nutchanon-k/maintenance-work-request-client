@@ -2,11 +2,22 @@ import React from 'react'
 import Avatar from '../Avatar';
 import { SearchIcon } from '../../icons/Icons';
 import useUserStore from '../../store/UserStore';
+import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
+import useRequestTaskStore from '../../store/RequestTaskStore';
 
 const AdminHeader = () => {
   const hdlLogout = useUserStore(state => state.hdlLogout)
   const user = useUserStore(state => state.user)
+  const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state.clearAllMaintenanceStore)
+  const clearAllRequestTaskStore = useRequestTaskStore(state => state.clearAllRequestTaskStore)
 
+  console.log(user)
+
+  const handleLogout = () => {
+    hdlLogout()
+    clearAllMaintenanceStore()
+    clearAllRequestTaskStore()
+  }
 
   return (
     <div className="navbar bg-base-100 shadow-md p-4">
@@ -22,15 +33,15 @@ const AdminHeader = () => {
         {/* User Info */}
         <div className="flex items-center space-x-2">
           <div className="text-right">
-            <p className="font-semibold">{user.firstName + " " + user.lastName}</p>
-            <p className="text-sm text-gray-500">{user.role + " " + user.level}</p>
+            <p className="font-semibold">{user?.firstName + " " + user?.lastName}</p>
+            <p className="text-sm text-gray-500">{user?.role + " " + user?.level}</p>
           </div>
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <Avatar
                   className="w-11 h-11 rounded-full !flex justify-center items-center"
-                  imgSrc={user.picture}
+                  imgSrc={user?.picture}
                   menu={true}
                 />
               </div>
@@ -39,12 +50,9 @@ const AdminHeader = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li><a>Settings</a></li>
-              <li onClick={hdlLogout}><a>Logout</a></li>
+              <li onClick={handleLogout}><a>Logout</a></li>
             </ul>
           </div>
-
-
-
         </div>
       </div>
     </div>

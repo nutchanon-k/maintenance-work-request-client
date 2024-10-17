@@ -45,7 +45,7 @@ const RequestInProgress = () => {
         </div>
       </div>
       {/* <div className="divider"></div> */}
-      <div className='flex flex-1 flex-wrap gap-4 p-4 '>
+      <div className='flex flex-1 flex-wrap gap-4 p-4 justify-evenly '>
         {requestTasksInprogress.map((el) => <CardRequest key={el.id} ReqTask = {el} />)}
       </div>
  

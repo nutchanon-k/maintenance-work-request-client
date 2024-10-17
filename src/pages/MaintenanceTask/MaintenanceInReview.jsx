@@ -15,6 +15,7 @@ const MaintenanceInReview = () => {
 
   useEffect(() => {
     getMaintenanceTaskInReview(token)
+    
   }, [])
   console.log(maintenanceTaskInReview)
   // console.log("test", selectedDate)
@@ -46,7 +47,7 @@ const MaintenanceInReview = () => {
         </div>
       </div>
       {/* <div className="divider"></div> */}
-      <div className='flex flex-1 flex-wrap gap-4 p-4 '>
+      <div className='flex flex-1 flex-wrap gap-4 p-4 justify-evenly '>
         {maintenanceTaskInReview.map((el) => (<CardMaintenance key={el.id} maintenanceTask={el} />))}
       </div>
 

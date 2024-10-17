@@ -26,14 +26,14 @@ const Login = () => {
     try {
       e.preventDefault()
       if (!input.email.trim() || !input.password.trim()) {
-        return alert('Please fill in all fields')
+        return toast.error('Please fill in all fields')
       }
       const data  = await hdlLogin(input)
       console.log(data)
-      // toast.success(data.message)
+      toast.success(data.message)
     }catch (error) {
       console.log(error)
-      // toast.error(error.response)
+      toast.error(error.response)
     }
   }
 
@@ -75,11 +75,8 @@ const Login = () => {
               </div>
 
               {/* Remember Me and Forgot Password */}
-              <div className="flex items-center justify-between">
-                <label className="inline-flex items-center">
-                  <input type="checkbox" className="form-checkbox" />
-                  <span className="ml-2 text-sm">Remember me</span>
-                </label>
+              <div className="flex items-center justify-end">
+
                 <a href="#" className="text-sm text-blue-500 hover:underline">Forgot Password?</a>
               </div>
 

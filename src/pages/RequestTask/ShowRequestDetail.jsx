@@ -20,7 +20,7 @@ const ShowRequestDetail = () => {
     const user = useUserStore(state => state.user)
 
 
-    console.log(user.role, user.level)
+    // console.log(user.role, user.level)
     const role = user.role
     const level = user.level
     console.log(currentTask)

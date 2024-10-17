@@ -21,6 +21,11 @@ import FinishWorkForm from "../pages/MaintenanceTask/FinishWorkForm";
 import useMaintenanceTaskStore from "../store/MaintenanceTaskStore";
 import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
 import ShowTaskInReview from "../pages/MaintenanceTask/ShowTaskInReview";
+import CreateUser from "../pages/user/CreateUser";
+import EditUser from "../pages/user/EditUser";
+import ShowUserDetails from "../pages/user/showUserDetails";
+import { useEffect, useState } from "react";
+import ProtectRoute from "./ProtectRoute";
 
 
 const guestRouter = createBrowserRouter([
@@ -31,7 +36,8 @@ const guestRouter = createBrowserRouter([
 
 const adminRouter = createBrowserRouter([
     {
-        path: "/", element: <AdminLayout />,
+        path: "/", 
+        element: <AdminLayout /> ,
         children: [
             {index: true, element: <Home />},
             {path: "request-in-progress", element: <RequestInProgress />},
@@ -49,6 +55,32 @@ const adminRouter = createBrowserRouter([
             {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
             {path : "finish-work-form/:id", element: <FinishWorkForm />},
             {path : "manage-users", element: <ManageUsers />},
+            {path : "create-user", element: <CreateUser/>},
+            {path : "edit-user/:id", element: <EditUser/>},
+            {path : "show-user/:id", element: <ShowUserDetails/>},
+            {path: "*", element: <NotFound  />}, 
+        ]
+    },
+]);
+
+
+const maintenanceRouter = createBrowserRouter([
+    {
+        path: "/", element: <AdminLayout />,
+        children: [
+            {index: true, element: <Home />},
+            {path: "request-in-progress", element: <RequestInProgress />},
+            {path: "show-request-task/:id", element: <ShowRequestDetail />},
+            {path: "edit-request-task/:id", element: <EditRequest />},
+            {path: `maintenance-backlog`, element: <MaintenanceBacklog />},
+            {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
+            {path : "maintenance-in-review", element: <MaintenanceInReview />},
+            {path : "maintenance-success", element: <MaintenanceSuccess />},
+            {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
+            {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
+            {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
+            {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
+            {path : "finish-work-form/:id", element: <FinishWorkForm />},
             {path: "*", element: <NotFound  />}, 
         ]
     },
@@ -58,10 +90,37 @@ const adminRouter = createBrowserRouter([
 
 export default function AppRouter() {
     const user = useUserStore(state => state.user)
-    // const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask)
-    console.log('test router')
-    const finalRouter = user ? adminRouter : guestRouter
+    const token = useUserStore(state => state.token)
+    const getMe = useUserStore(state => state.getMe)
+    const [router, setRouter] = useState(null);
+
+
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const result = await getMe(token);
+                if (result?.data?.role === "admin") {
+                    setRouter(adminRouter);
+                } else if (result?.data?.role === "maintenance") {
+                    setRouter(maintenanceRouter);
+                } else {
+                    setRouter(guestRouter);
+                }
+            } catch (error) {
+                setRouter(guestRouter); // In case of error, fallback to guestRouter
+            }
+        };
+        loadUser();
+    }, [token, getMe]);
+    
+    if (!router) {
+        return <div>Loading...</div>; // Show loading state until router is set
+    }
+
+    console.log('test router', user)
+    
     return (
-        <RouterProvider router={finalRouter} />
+        <RouterProvider router={router} />
     )
 }

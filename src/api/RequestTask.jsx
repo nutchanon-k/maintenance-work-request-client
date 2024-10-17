@@ -59,3 +59,12 @@ export const updateIsAssignedAPI = async (token, body, requestId) => {
     });
     return result;
 }
+
+export const updateRTStatusAPI = async (token, body, requestId) => {
+    const result = await axios.patch(`http://localhost:8000/request-task/update-status/${requestId}`, body, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return result;
+}

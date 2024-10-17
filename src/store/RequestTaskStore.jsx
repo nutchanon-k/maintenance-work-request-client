@@ -12,6 +12,14 @@ const useRequestTaskStore = create(persist((set, get) => ({
     currentTask: null,
     loading : false,
 
+    clearAllRequestTaskStore : () => {
+      set({
+        requestTasksInprogress : [], 
+        requestTasKsSuccess : [],
+        currentTask : null,
+        loading : false
+      }) 
+    },
 
     createRequestTask: async (token,body) => {
         try{
@@ -91,6 +99,16 @@ const useRequestTaskStore = create(persist((set, get) => ({
             toast.error(error.response.data.message)
         }
     },
+
+    updateRTStatus : async (token, body, requestId) => {
+        try{
+            const result = await updateRTStatusAPI (token, body, requestId)
+              return result
+        }catch(error){
+            console.log(error)
+            toast.error(error.response.data.message)
+        }
+    }
  
 
 

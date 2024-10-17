@@ -1,7 +1,9 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
-import axios from 'axios'
-import { getMaintenanceMembersAPI } from '../api/UserAPI';
+import axios, { all } from 'axios'
+import { createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
+import { toast } from 'react-toastify';
+import { getMeAPI } from '../api/AuthAPI';
 
 
 
@@ -10,22 +12,33 @@ const useUserStore = create(persist((set, get) => ({
   user: null,
   token: "",
   maintenanceMembers: [],
+  locationData: [],
+  departmentData: [],
+  allUser : [],
+  currentUser : null,
 
   hdlLogin: async (body) => {
     try{
-    console.log(body)
-      const path = 'http://localhost:6000/auth/login'
       const result = await axios.post("http://localhost:8000/auth/login",body)
-      console.log(result)
       set({ token: result.data.token, user: result.data.user })
+
       return result.data
     }catch(error){
       console.log(error)
+      toast.error(error.response.data.message)
     }
   },
 
   hdlLogout: () => {
-      set({ user: null, token: "" })
+      set({ 
+        user: null, 
+        token: "",
+        maintenanceMembers: [],
+        locationData: [],
+        departmentData: [],
+        allUser : [],
+        currentUser : null 
+      })
   },
 
   getMaintenanceMembers: async (token) => {
@@ -36,12 +49,94 @@ const useUserStore = create(persist((set, get) => ({
       return result
     }catch(error){
       console.log(error)
+      
     }
-  }
+  },
+  getLocationAndDepartmentData: async (token) => {
+    try{
+      const result = await getLocationAndDepartmentAPI(token)
+      set({ locationData: result.data.locations})
+      set({ departmentData: result.data.departments})
+      console.log(result.data)
+      return result.data
+    }catch(error){
+      console.log(error)
+    }
+  },
+
+  createUser : async (token, body) => {
+    try{
+      const result = await createUserAPI(token, body)
+      return result
+    }catch(error){
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  },
+
+  getAllUser : async (token) => {
+    try{
+      const result = await getUserAPI(token)
+      set({allUser : result.data.data})
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  },
+
+  getCurrentUser : async (token, userId) => {
+    try{
+      const result = await getUserByIdAPI(token , userId)
+      set({currentUser : result.data.data})
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  },
+
+  deleteUser : async (token, userId) => {
+    try{
+      const result = await deleteUserAPI(token , userId)
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  },
+
+  resetCurrentUser : () => {
+    set({currentUser : null})
+  },
+
+  updateUser : async (token, body, userId) => {
+    try{
+      console.log(body)
+      const result = await updateUserAPI(token, body, userId)
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  },
+  getMe : async (token) => {
+    try{
+      console.log("get meeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+      const result = await getMeAPI(token)
+      set({user : result.data})
+      return result
+    }catch(error){
+      console.log(error)
+    }
+  },
+
+  
+
+
 }),{
   name: "accessToken",
   storage: createJSONStorage(() => localStorage),
 }));
+
+
+
 
 
 export default useUserStore

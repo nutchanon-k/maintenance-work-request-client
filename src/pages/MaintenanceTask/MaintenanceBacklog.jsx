@@ -60,7 +60,7 @@ const MaintenanceBacklog = () => {
         </div>
       </div>
       {/* <div className="divider"></div> */}
-      <div className='flex flex-1 flex-wrap p-4 gap-4'>
+      <div className='flex flex-1 flex-wrap p-4 gap-4 justify-evenly'>
         {maintenanceTaskBacklog.map((el) => <CardMaintenance key={el.id} maintenanceTask={el} />)}
       </div>
 
