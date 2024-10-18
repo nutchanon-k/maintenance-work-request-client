@@ -5,7 +5,7 @@ import useUserStore from '../../store/UserStore';
 import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
 import useRequestTaskStore from '../../store/RequestTaskStore';
 
-const AdminHeader = () => {
+const MaintenanceHeader = () => {
   const hdlLogout = useUserStore(state => state.hdlLogout)
   const user = useUserStore(state => state.user)
   const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state.clearAllMaintenanceStore)
@@ -49,7 +49,6 @@ const AdminHeader = () => {
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              
               <li onClick={handleLogout}><a>Logout</a></li>
             </ul>
           </div>
@@ -57,7 +56,6 @@ const AdminHeader = () => {
       </div>
     </div>
   );
-};
+}
 
-
-export default AdminHeader
+export default MaintenanceHeader

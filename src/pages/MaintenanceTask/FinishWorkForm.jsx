@@ -34,7 +34,18 @@ const FinishWorkForm = () => {
 
 
     useEffect(() => {
-        getMaintenanceTask(token, id)
+        const checkId = async () => {
+            try {
+              const result = await getMaintenanceTask(token, id)
+              console.log(result)
+              if (result.length == 0 || !result) {
+                navigate('/not-found')
+              }
+            } catch (error) {
+              console.log(error)
+            }
+          }
+          checkId()
     }, [])
 
 

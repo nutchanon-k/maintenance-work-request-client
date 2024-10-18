@@ -24,7 +24,13 @@ const ShowUserDetails = () => {
   const [showConfirm, setShowConfirm] = useState(false)
 
   useEffect(() => {
-    getCurrentUser(token, id)
+    const checkId = async () => {
+      const result = await  getCurrentUser(token, id)
+      if(result?.length == 0 || !result){
+        navigate('/not-found')
+      }
+    }
+    checkId()
   }, [id])
 
   console.log(currentUser)

@@ -6,16 +6,14 @@ import { RiProgress2Line, RiProgress4Line, RiProgress6Line, RiProgress8Line } fr
 import { VscRequestChanges } from "react-icons/vsc";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { Link, NavLink } from 'react-router-dom'
+import useUserStore from '../../store/UserStore';
 
-
-
-
-const AdminSidebar = () => {
+const RequesterSidebar = () => {
   const [isTaskExpanded, setIsTaskExpanded] = useState(false);
   const [isRequestTaskExpanded, setIsRequestTaskExpanded] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
  
-  
+  const user = useUserStore(state => state.user)
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -160,19 +158,6 @@ const AdminSidebar = () => {
             </div>
           </div>
 
-          {/* Manage User link */}
-          <div className={`flex items-center ${isSidebarOpen ? "w-[225px]" : ""} `}>
-            <NavLink
-              end
-              className={({ isActive }) => isActive
-                ? `flex items-center p-2  bg-sky-100 border-l-4 border-blue-500 text-secondary hover:bg-sky-200  rounded ${isSidebarOpen ? "w-full" : ""}`
-                : `flex items-center p-2 hover:text-blue-500 hover:bg-sky-100 rounded ${isSidebarOpen ? "w-full" : ""}`}
-              to={"/manage-users"}
-            >
-              <RiUserSettingsLine size={20} className="mr-3" />
-              <span className={`transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 h-8'}`}>Manage User</span>
-            </NavLink>
-          </div>
 
           {/* Add New Request button */}
           {isSidebarOpen && (
@@ -187,6 +172,6 @@ const AdminSidebar = () => {
     </div>
     
   );
-};
+}
 
-export default AdminSidebar;
+export default RequesterSidebar

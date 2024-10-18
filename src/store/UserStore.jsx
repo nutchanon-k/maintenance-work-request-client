@@ -4,7 +4,7 @@ import axios, { all } from 'axios'
 import { createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
 import { toast } from 'react-toastify';
 import { getMeAPI } from '../api/AuthAPI';
-
+import Swal from 'sweetalert2'
 
 
 
@@ -21,11 +21,23 @@ const useUserStore = create(persist((set, get) => ({
     try{
       const result = await axios.post("http://localhost:8000/auth/login",body)
       set({ token: result.data.token, user: result.data.user })
-
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `Welcome Back ${result.data.user.firstName}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
       return result.data
     }catch(error){
       console.log(error)
-      toast.error(error.response.data.message)
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.response.data.message,
+        footer: "please try again"
+      });
+      // toast.error(error.response.data.message)
     }
   },
 
@@ -46,7 +58,7 @@ const useUserStore = create(persist((set, get) => ({
       const result = await getMaintenanceMembersAPI(token)
       set({ maintenanceMembers: result.data.data })
       // console.log("xxxxxxxx", result.data.data)
-      return result
+      return result.data.data
     }catch(error){
       console.log(error)
       
@@ -88,7 +100,7 @@ const useUserStore = create(persist((set, get) => ({
     try{
       const result = await getUserByIdAPI(token , userId)
       set({currentUser : result.data.data})
-      return result
+      return result.data.data
     }catch(error){
       console.log(error)
     }

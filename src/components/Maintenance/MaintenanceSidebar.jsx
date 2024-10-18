@@ -6,16 +6,15 @@ import { RiProgress2Line, RiProgress4Line, RiProgress6Line, RiProgress8Line } fr
 import { VscRequestChanges } from "react-icons/vsc";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { Link, NavLink } from 'react-router-dom'
+import useUserStore from '../../store/UserStore';
 
 
-
-
-const AdminSidebar = () => {
+const MaintenanceSidebar = () => {
   const [isTaskExpanded, setIsTaskExpanded] = useState(false);
   const [isRequestTaskExpanded, setIsRequestTaskExpanded] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
- 
-  
+
+  const user = useUserStore(state => state.user)
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -41,7 +40,7 @@ const AdminSidebar = () => {
             {isSidebarOpen ? <AiOutlineLeft size={32} /> : <AiOutlineRight size={32} />}
           </button>
         </div>
- 
+
         {/* Main Menu Text */}
         <div className={`text-sm text-gray-500  font-semibold mb-4 whitespace-nowrap transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
           MAIN MENU
@@ -63,44 +62,47 @@ const AdminSidebar = () => {
             </NavLink>
           </div>
 
-          {/* Request Task menu */}
-          <div className="transition-all duration-300 ease-in-out">
-            <button
-              onClick={() => setIsRequestTaskExpanded(!isRequestTaskExpanded)}
-              className="flex items-center justify-between w-full p-2 hover:text-blue-500 hover:bg-sky-100 rounded "
-            >
-              <div className="flex items-center">
-                <VscRequestChanges size={20} className="mr-3" />
-                <span className={`transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 h-8'}`}>Request Task</span>
+          {/* Task menu */}
+          {/* Request Task menu && check if user is leader or manager */}
+          {(user?.level === 'leader' || user?.level === 'manager') &&
+            <div className="transition-all duration-300 ease-in-out">
+              <button
+                onClick={() => setIsRequestTaskExpanded(!isRequestTaskExpanded)}
+                className="flex items-center justify-between w-full p-2 hover:text-blue-500 hover:bg-sky-100 rounded "
+              >
+                <div className="flex items-center">
+                  <VscRequestChanges size={20} className="mr-3" />
+                  <span className={`transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 h-8'}`}>Request Task</span>
+                </div>
+                <AiOutlineUp size={16} className={`transform transition-transform duration-300 ${isRequestTaskExpanded ? 'rotate-0' : 'rotate-180'}`} />
+              </button>
+
+              {/* Sub-menu (expanded task options) */}
+              <div className={`ml-3 mt-2 space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${isRequestTaskExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <NavLink
+                  end
+                  className={({ isActive }) => isActive
+                    ? 'flex items-center py-1 text-secondary border-l-4 border-blue-500 bg-sky-100 hover:bg-sky-200  rounded transition-colors duration-200'
+                    : 'flex items-center py-1 text-gray-600 hover:text-blue-500 hover:bg-sky-100 rounded transition-colors duration-200'}
+                  to={"/request-in-progress"}
+                >
+                  <RiProgress4Line size={18} className="mr-2 ml-2" />
+                  {isSidebarOpen && <span>In Progress</span>}
+                </NavLink>
+
+                <NavLink
+                  end
+                  className={({ isActive }) => isActive
+                    ? 'flex items-center py-1 text-secondary border-l-4 border-blue-500 bg-sky-100 hover:bg-sky-200  rounded transition-colors duration-200'
+                    : 'flex items-center py-1 text-gray-600 hover:text-blue-500 hover:bg-sky-100 rounded transition-colors duration-200'}
+                  to={"/request-success"}
+                >
+                  <RiProgress8Line size={18} className="mr-2 ml-2" />
+                  {isSidebarOpen && <span>Success</span>}
+                </NavLink>
               </div>
-              <AiOutlineUp size={16} className={`transform transition-transform duration-300 ${isRequestTaskExpanded ? 'rotate-0' : 'rotate-180'}`} />
-            </button>
-
-            {/* Sub-menu (expanded task options) */}
-            <div className={`ml-3 mt-2 space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${isRequestTaskExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-              <NavLink
-                end
-                className={({ isActive }) => isActive
-                  ? 'flex items-center py-1 text-secondary border-l-4 border-blue-500 bg-sky-100 hover:bg-sky-200  rounded transition-colors duration-200'
-                  : 'flex items-center py-1 text-gray-600 hover:text-blue-500 hover:bg-sky-100 rounded transition-colors duration-200'}
-                to={"/request-in-progress"}
-              >
-                <RiProgress4Line size={18} className="mr-2 ml-2" />
-                {isSidebarOpen && <span>In Progress</span>}
-              </NavLink>
-
-              <NavLink
-                end
-                className={({ isActive }) => isActive
-                  ? 'flex items-center py-1 text-secondary border-l-4 border-blue-500 bg-sky-100 hover:bg-sky-200  rounded transition-colors duration-200'
-                  : 'flex items-center py-1 text-gray-600 hover:text-blue-500 hover:bg-sky-100 rounded transition-colors duration-200'}
-                to={"/request-success"}
-              >
-                <RiProgress8Line size={18} className="mr-2 ml-2" />
-                {isSidebarOpen && <span>Success</span>}
-              </NavLink>
             </div>
-          </div>
+          }
 
           {/* Maintenance Task menu */}
           <div className="transition-all duration-300 ease-in-out">
@@ -159,34 +161,11 @@ const AdminSidebar = () => {
               </NavLink>
             </div>
           </div>
-
-          {/* Manage User link */}
-          <div className={`flex items-center ${isSidebarOpen ? "w-[225px]" : ""} `}>
-            <NavLink
-              end
-              className={({ isActive }) => isActive
-                ? `flex items-center p-2  bg-sky-100 border-l-4 border-blue-500 text-secondary hover:bg-sky-200  rounded ${isSidebarOpen ? "w-full" : ""}`
-                : `flex items-center p-2 hover:text-blue-500 hover:bg-sky-100 rounded ${isSidebarOpen ? "w-full" : ""}`}
-              to={"/manage-users"}
-            >
-              <RiUserSettingsLine size={20} className="mr-3" />
-              <span className={`transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 w-0 h-8'}`}>Manage User</span>
-            </NavLink>
-          </div>
-
-          {/* Add New Request button */}
-          {isSidebarOpen && (
-            <Link to={"/create-request-task"} className="btn btn-secondary w-full mt-4">
-              <AiOutlinePlus size={20} className="mr-2" />
-              Add New Request
-            </Link>
-          )}
-
         </nav>
       </div>
     </div>
-    
-  );
-};
 
-export default AdminSidebar;
+  );
+}
+
+export default MaintenanceSidebar

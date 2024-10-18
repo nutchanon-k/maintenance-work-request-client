@@ -5,7 +5,7 @@ import useUserStore from '../../store/UserStore';
 import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore';
 import useRequestTaskStore from '../../store/RequestTaskStore';
 
-const AdminHeader = () => {
+const RequesterHeader = () => {
   const hdlLogout = useUserStore(state => state.hdlLogout)
   const user = useUserStore(state => state.user)
   const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state.clearAllMaintenanceStore)
@@ -57,7 +57,6 @@ const AdminHeader = () => {
       </div>
     </div>
   );
-};
+}
 
-
-export default AdminHeader
+export default RequesterHeader

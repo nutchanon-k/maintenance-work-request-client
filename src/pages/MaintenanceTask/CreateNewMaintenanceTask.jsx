@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import useRequestTaskStore from '../../store/RequestTaskStore'
 import { NoPhotoIcon } from '../../icons/Icons'
@@ -8,11 +8,13 @@ import useUserStore from '../../store/UserStore'
 import Avatar from '../../components/Avatar'
 import { CardToChooseUser } from '../../components/Card'
 import useMaintenanceTaskStore from '../../store/MaintenanceTaskStore'
+import Swal from 'sweetalert2'
 
 const CreateNewMaintenanceTask = () => {
   const navigate = useNavigate()
+  const { reqId } = useParams()
 
-  
+
   const user = useUserStore(state => state.user)
   const token = useUserStore(state => state.token)
   const currentTask = useRequestTaskStore(state => state.currentTask)
@@ -20,31 +22,49 @@ const CreateNewMaintenanceTask = () => {
   const getMaintenanceMembers = useUserStore(state => state.getMaintenanceMembers)
   const maintenanceMembers = useUserStore(state => state.maintenanceMembers)
   const createMaintenanceTask = useMaintenanceTaskStore(state => state.createMaintenanceTask)
- 
+
   const updateIsAssigned = useRequestTaskStore(state => state.updateIsAssigned)
-  
-  
+
+
   //******* */ ควรไห้กดเลือกประเภทแล้วไห้ filter คนแผนกนั้นๆมาก้พอ
-  
+
   const [reqTask, setReqTask] = useState('')
   const [typeOfFailure, setTypeOfFailure] = useState('');
   const [assignedMember, setAssignedMember] = useState('');
   const [note, setNote] = useState('');
+  const [member, setMember] = useState('');
+  const [department, setDepartment] = useState([]);
 
 
-  
+
   useEffect(() => {
+    const checkId = async () => {
+      try {
+        const result = await getRequestTask(token, reqId)
+        if (result.length == 0 || !result) {
+          navigate('/not-found')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    checkId()
     getMaintenanceMembers(token)
   }, [])
- 
+
   useEffect(() => {
     if (currentTask) {
       setReqTask(currentTask[0])
     }
   }, [currentTask])
 
-  // console.log(maintenanceMembers)
- 
+  console.log(maintenanceMembers)
+  useEffect(() => {
+    setMember(maintenanceMembers.filter((member) => member.department.name === department))
+  }, [typeOfFailure])
+
+  console.log(member)
+
   //ต้องมี Body ตามนี้ในการ submit
   // {
   //   requestId,
@@ -55,25 +75,26 @@ const CreateNewMaintenanceTask = () => {
   // console.log(reqTask.id)
   const hdlSubmit = async (e) => {
     try {
-    e.preventDefault();
-    const result1 = await createMaintenanceTask(token, {
-      requestId : reqTask?.id,
-      machineId : reqTask?.machineId,
-      typeOfFailureId : typeOfFailure,
-      employeeId : assignedMember,
-      note : note
-    })
-    const result2 = await updateIsAssigned(token, {isAssigned : true,}, reqTask.id)
-    console.log(result1)
-    console.log(result2)
-    navigate('/show-request-task')
-    
-  }catch(error){
-    console.log(error)
-    
-  }
+      e.preventDefault();
+      const result1 = await createMaintenanceTask(token, {
+        requestId: reqTask?.id,
+        machineId: reqTask?.machineId,
+        typeOfFailureId: typeOfFailure,
+        employeeId: assignedMember,
+        note: note
+      })
+      const result2 = await updateIsAssigned(token, { isAssigned: true, }, reqTask.id)
+      console.log(result1)
+      console.log(result2)
+
+      navigate(`/show-request-task/${reqId}`)
+
+    } catch (error) {
+      console.log(error)
+
+    }
   };
-  
+
   // console.log(currentTask)
 
 
@@ -81,7 +102,8 @@ const CreateNewMaintenanceTask = () => {
 
   const hdlBack = () => {
     console.log('Back button clicked');
-    navigate('/show-request-task');
+
+    navigate(`/show-request-task/${reqId}`);
   };
 
 
@@ -175,7 +197,18 @@ const CreateNewMaintenanceTask = () => {
                   <select
                     className="select select-bordered w-full"
                     value={typeOfFailure}
-                    onChange={(e) => setTypeOfFailure(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setTypeOfFailure(value)
+                      if (value === "1") {
+                        setDepartment("Mechanical")
+                      } else if (value === "2") {
+                        setDepartment("Electrical")
+                      } else if (value === "3") {
+                        setDepartment("Tooling")
+                      }
+                    }
+                    }
                     required
                   >
                     <option disabled selected value={""} >Please select Type of failure</option>
@@ -198,9 +231,13 @@ const CreateNewMaintenanceTask = () => {
                     required
                   >
                     <option disabled selected value="">Please select member</option>
-                    {maintenanceMembers.map((member) => (<option key={member.id} value={member.id}>{member.firstName + " " + member.lastName}</option>
 
-                    ))}
+                    {member.length > 0 ?
+                      member.map((member) => (<option key={member.id} value={member.id}>{member.firstName + " " + member.lastName}</option>
+                      ))
+                      :
+                      <></>
+                    }
                   </select>
                 </div>
 
@@ -233,24 +270,18 @@ const CreateNewMaintenanceTask = () => {
 
           <div className="divider lg:divider-horizontal"></div>
 
-          <div className=' w-3/4 p-2'>
+          <div className=' w-1/2 p-2'>
             <div className="w-full mx-auto p-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold">Member</h2>
-                <div className="dropdown">
-                  <select className="select select-bordered w-full max-w-xs">
-                    <option disabled selected>Eng.Dept</option>
-                    <option>All</option>
-                    <option>Mechanical</option>
-                    <option>Electrical</option>
-                    <option>Tooling</option>
-                  </select>
-                </div>
+
               </div>
               <div className="flex flex-wrap">
-                {maintenanceMembers.map((member) => (
-                  <CardToChooseUser key={member.id} member={member} />
-                ))}
+                {member?.length > 0 ?
+                  member?.map((member) => (<CardToChooseUser key={member.id} member={member} />))
+                  :
+                  maintenanceMembers.map((member) => (<CardToChooseUser key={member.id} member={member} />))
+                }
               </div>
             </div>
           </div>

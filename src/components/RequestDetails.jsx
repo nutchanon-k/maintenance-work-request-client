@@ -78,10 +78,10 @@ const RequestDetails = (props) => {
                 {mTask?.isRejected ?
                     <>
                         <p className="text-sm text-error">
-                            <strong>Reject: </strong> {mTask?.isRejected}
+                            <strong>Reject: </strong> {mTask?.isRejected ? 'Yes' : 'No'}
                         </p>
                         <p className="text-sm text-error">
-                            <strong>Reject reason: </strong> {mTask?.note}
+                            <strong>Reject reason: </strong> {mTask?.rejectReason}
                         </p>
                     </>
                     :

@@ -31,53 +31,28 @@ const EditRequest = () => {
 
 
 
-    console.log("test data ", data)
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            setLoading(true)
-            const body = new FormData();
-            body.append("machineId", machineId);
-            body.append("faultSymptoms", faultSymptoms);
-            body.append("employeeId", user.id);
-            body.append("departmentId", machineData.departmentId);
-            body.append("status", data.status);
-            if (image) {
-                body.append("image", image)
-            }
-            for (let [key, value] of body.entries()) {
-                console.log(key, value)
-            }
-            const result = await editRequestTask(token, body, data.id)
-
-            toast.success(result.data.message)
-            navigate(`/show-request-task/${id}`)
-
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    const hdlChange = async (e) => {
-        setMachineId(e.target.value)
-        setMachineData('')
-    }
 
     // set state โดยใช้ข้อมูลจาก currentTask จาก store
     useEffect(() => {
-        getRequestTask(token, id)
+        const checkId = async () => {
+            try {
+                const result = await getRequestTask(token, id)
+                if (result.length == 0 || !result) {
+                    navigate('/not-found')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        checkId()
     }, [])
 
     useEffect(() => {
-        if (currentTask) {
+        if (currentTask && currentTask.length > 0) {
             setData(currentTask[0])
-            setMachineId(currentTask[0].machineId)
-            setOldImage(currentTask[0].image)
-            setFaultSymptoms(currentTask[0].faultSymptoms)
+            setMachineId(currentTask[0]?.machineId)
+            setOldImage(currentTask[0]?.image)
+            setFaultSymptoms(currentTask[0]?.faultSymptoms)
         }
     }, [currentTask])
 
@@ -98,6 +73,41 @@ const EditRequest = () => {
             return () => clearTimeout(result);
         }
     }, [machineId])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true)
+            const body = new FormData();
+            body.append("machineId", machineId);
+            body.append("faultSymptoms", faultSymptoms);
+            body.append("employeeId", user.id);
+            body.append("departmentId", machineData.departmentId);
+            body.append("status", data.status);
+            if (image) {
+                body.append("image", image)
+            }
+            // for (let [key, value] of body.entries()) {
+            //     console.log(key, value)
+            // }
+            const result = await editRequestTask(token, body, data.id)
+
+            toast.success(result.data.message)
+            navigate(`/show-request-task/${id}`)
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    };
+
+    const hdlChange = async (e) => {
+        setMachineId(e.target.value)
+        setMachineData('')
+    }
+
+
     // console.log(data)
     // console.log("old image",oldImage)
     // console.log(machineId)

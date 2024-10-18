@@ -5,23 +5,24 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { NoPhotoIcon } from '../../icons/Icons'
 import RequestDetails from '../../components/RequestDetails'
-// import CardMaintenance from '../../components/Card'
+
 
 
 const ShowMaintenanceTask = () => {
   const navigate = useNavigate()
   const { id } = useParams()
-  console.log("id from params", id)
 
 
+  {/* store */ }
   const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask)
   const getMaintenanceTask = useMaintenanceTaskStore(state => state.getMaintenanceTask)
   const resetCurrentMaintenanceTask = useMaintenanceTaskStore(state => state.resetCurrentMaintenanceTask)
   const token = useUserStore(state => state.token)
   const deleteMaintenanceTask = useMaintenanceTaskStore(state => state.deleteMaintenanceTask)
   const updateMaintenanceTask = useMaintenanceTaskStore(state => state.updateMaintenanceTask)
+  const user = useUserStore(state => state.user)
 
-
+  {/* state */ }
   const [mTask, setMTask] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -29,22 +30,33 @@ const ShowMaintenanceTask = () => {
   const [showConfirmReturn, setShowConfirmReturn] = useState(false)
   const [note, setNote] = useState('')
 
-  console.log(currentMaintenanceTask)
-
 
   useEffect(() => {
-    getMaintenanceTask(token, id)
-  }, [])
-
-
-  useEffect(() => {
-    if (currentMaintenanceTask) {
-      setMTask(currentMaintenanceTask[0])
-      setNote(currentMaintenanceTask[0].note)
+    const checkId = async () => {
+      try {
+        const result = await getMaintenanceTask(token, id)
+        console.log(result)
+        if (result.length == 0 || !result) {
+          navigate('/not-found')
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
+    checkId()
+  }
+    , [])
+
+
+  useEffect(() => {
+    if (currentMaintenanceTask && currentMaintenanceTask?.length > 0) {
+      setMTask(currentMaintenanceTask[0])
+      setNote(currentMaintenanceTask[0]?.note)
+    }
+
   }, [currentMaintenanceTask])
 
-
+  console.log(currentMaintenanceTask)
 
 
   const handleAccept = async () => {
@@ -104,6 +116,9 @@ const ShowMaintenanceTask = () => {
             </div>
           </div>
         </div>
+
+
+        {/* body */}
         <div className="flex flex-col items-center space-y-4 p-6 bg-gray-50 min-h-screen">
           <div className="flex justify-between w-full max-w-5xl">
 
@@ -115,26 +130,29 @@ const ShowMaintenanceTask = () => {
             <div className="w-1/2 flex flex-col items-end space-y-4">
 
               {/* Delete or Return button */}
-              {mTask?.status === "backlog" ?
-                <button
-                  className="btn btn-outline btn-error w-[150px]  "
-                  onClick={() => {
-                    setShowConfirm(true)
-                    document.getElementById('confirm_delete_mTask_modal').showModal()
-                  }}
-                >
-                  Delete Task
-                </button>
+              {user.role === "requester" ?
+                <></>
                 :
-                <button
-                  className="btn btn-outline btn-error w-[200px]  "
-                  onClick={() => {
-                    setShowConfirmReturn(true)
-                    document.getElementById('confirm_return_mTask_modal').showModal()
-                  }}
-                >
-                  Return Task to Backlog
-                </button>
+                mTask?.status === "backlog" ?
+                  <button
+                    className="btn btn-outline btn-error w-[150px]  "
+                    onClick={() => {
+                      setShowConfirm(true)
+                      document.getElementById('confirm_delete_mTask_modal').showModal()
+                    }}
+                  >
+                    Delete Task
+                  </button>
+                  :
+                  <button
+                    className="btn btn-outline btn-error w-[200px]  "
+                    onClick={() => {
+                      setShowConfirmReturn(true)
+                      document.getElementById('confirm_return_mTask_modal').showModal()
+                    }}
+                  >
+                    Return Task to Backlog
+                  </button>
               }
               <div
                 className="relative w-72 h-48 border rounded-lg overflow-hidden hover:cursor-pointer hover:opacity-80 active:transform active:scale-95"
@@ -154,46 +172,62 @@ const ShowMaintenanceTask = () => {
               </div>
             </div>
           </div>
-          {/* Check status and choose Buttons */}
-          {mTask?.status === "backlog" ?
-            <div className=' flex justify-between w-full max-w-5xl'>
 
+
+
+          {/* Check role,status  for choose Buttons */}
+          {user.role === "requester" && mTask?.status === "backlog" ?
+            <div className=' flex justify-end w-full max-w-5xl'>
               {/* Back button */}
               <Link to={'/maintenance-backlog'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
                 Back
               </Link>
-
-              {/* Accept button */}
-              <button
-                className="btn btn-secondary w-[150px] mt-4 "
-                onClick={() => {
-                  setShowConfirmAccept(true)
-                  document.getElementById('confirm_accept_mTask_modal').showModal()
-                }}>
-                Accept
-              </button>
             </div>
             :
-            <div className=' flex justify-between w-full max-w-5xl'>
-              {/* Back button */}
-              <Link to={'/maintenance-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
-                Back
-              </Link>
-              {/* Accept button */}
-              <Link
-                className="btn btn-secondary w-[150px] mt-4 "
-                to={`/finish-work-form/${mTask?.id}`}>
-                  Finished Work
-              </Link>
-            </div>
+            user.role === "requester" && mTask?.status === "inProgress" ?
+              <div className=' flex justify-end w-full max-w-5xl'>
+                {/* Back button */}
+                <Link to={'/maintenance-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                  Back
+                </Link>
+              </div>
+              :
+              mTask?.status === "backlog" ?
+                <div className=' flex justify-between w-full max-w-5xl'>
+                  {/* Back button */}
+                  <Link to={'/maintenance-backlog'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                    Back
+                  </Link>
+                  {/* Accept button */}
+                  <button
+                    className="btn btn-secondary w-[150px] mt-4 "
+                    onClick={() => {
+                      setShowConfirmAccept(true)
+                      document.getElementById('confirm_accept_mTask_modal').showModal()
+                    }}>
+                    Accept
+                  </button>
+                </div>
+                :
+                <div className=' flex justify-between w-full max-w-5xl'>
+                  {/* Back button */}
+                  <Link to={'/maintenance-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
+                    Back
+                  </Link>
+                  {/* Accept button */}
+                  <Link
+                    className="btn btn-secondary w-[150px] mt-4 "
+                    to={`/finish-work-form/${mTask?.id}`}>
+                    Finished Work
+                  </Link>
+                </div>
           }
         </div>
-      </div>
+      </div >
 
 
 
       {/* modal */}
-
 
       {/* image modal */}
       <dialog id="picture_backlog_modal" className="modal" onClose={() => { setIsOpen(false) }}>

@@ -15,17 +15,18 @@ import CreateNewRequest from "../pages/RequestTask/CreateNewRequest";
 import ShowRequestDetail from "../pages/RequestTask/ShowRequestDetail";
 import EditRequest from "../pages/RequestTask/EditRequest";
 import CreateNewMaintenanceTask from "../pages/MaintenanceTask/CreateNewMaintenanceTask";
-// import ShowTaskBacklog from "../pages/MaintenanceTask/ShowMaintenanceTask";
-import ShowTaskInProgress from "../pages/MaintenanceTask/ShowTaskInProgress";
 import FinishWorkForm from "../pages/MaintenanceTask/FinishWorkForm";
-import useMaintenanceTaskStore from "../store/MaintenanceTaskStore";
 import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
 import ShowTaskInReview from "../pages/MaintenanceTask/ShowTaskInReview";
 import CreateUser from "../pages/user/CreateUser";
 import EditUser from "../pages/user/EditUser";
 import ShowUserDetails from "../pages/user/showUserDetails";
 import { useEffect, useState } from "react";
-import ProtectRoute from "./ProtectRoute";
+import ProtectRouteLeader from "./ProtectRouteLeader";
+import MaintenanceLayout from "../layouts/MaintenanceLayout";
+import RequesterLayout from "../layouts/RequesterLayout";
+import LoadingAnimation from "../assets/LoadingAnimation.json";
+import Lottie from "lottie-react";
 
 
 const guestRouter = createBrowserRouter([
@@ -49,9 +50,8 @@ const adminRouter = createBrowserRouter([
             {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
             {path : "maintenance-in-review", element: <MaintenanceInReview />},
             {path : "maintenance-success", element: <MaintenanceSuccess />},
-            {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
+            {path : "create-maintenance-task/:reqId", element: <CreateNewMaintenanceTask />},
             {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
-            {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
             {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
             {path : "finish-work-form/:id", element: <FinishWorkForm />},
             {path : "manage-users", element: <ManageUsers />},
@@ -66,21 +66,43 @@ const adminRouter = createBrowserRouter([
 
 const maintenanceRouter = createBrowserRouter([
     {
-        path: "/", element: <AdminLayout />,
+        path: "/", 
+        element: <MaintenanceLayout /> ,
         children: [
             {index: true, element: <Home />},
-            {path: "request-in-progress", element: <RequestInProgress />},
+            {path: "request-in-progress", element: <ProtectRouteLeader element={<RequestInProgress />}/>},
+            {path: "request-success", element: <ProtectRouteLeader element={<RequestSuccess />}/>},
             {path: "show-request-task/:id", element: <ShowRequestDetail />},
-            {path: "edit-request-task/:id", element: <EditRequest />},
             {path: `maintenance-backlog`, element: <MaintenanceBacklog />},
             {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
             {path : "maintenance-in-review", element: <MaintenanceInReview />},
             {path : "maintenance-success", element: <MaintenanceSuccess />},
-            {path : "create-maintenance-task", element: <CreateNewMaintenanceTask />},
+            {path : "create-maintenance-task/:reqId", element: <CreateNewMaintenanceTask />},
             {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
-            {path : "show-task-inprogress/:id", element: <ShowTaskInProgress />},
             {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
             {path : "finish-work-form/:id", element: <FinishWorkForm />},
+            {path: "*", element: <NotFound  />}, 
+        ]
+    },
+]);
+
+const requesterRouter = createBrowserRouter([
+    {
+        path: "/", 
+        element: <RequesterLayout /> ,
+        children: [
+            {index: true, element: <Home />},
+            {path : "request-in-progress", element: <RequestInProgress />},
+            {path : "request-success", element: <RequestSuccess />},
+            {path : "create-request-task", element: <CreateNewRequest />},
+            {path : "show-request-task/:id", element: <ShowRequestDetail />},
+            {path : "edit-request-task/:id", element: <EditRequest />},
+            {path : "maintenance-backlog", element: <MaintenanceBacklog />},
+            {path : "maintenance-in-progress", element: <MaintenanceInProgress />},
+            {path : "maintenance-in-review", element: <MaintenanceInReview />},
+            {path : "maintenance-success", element: <MaintenanceSuccess />},
+            {path : "show-maintenance-task/:id", element: <ShowMaintenanceTask />},
+            {path : "show-task-in-review/:id", element: <ShowTaskInReview />},
             {path: "*", element: <NotFound  />}, 
         ]
     },
@@ -104,18 +126,20 @@ export default function AppRouter() {
                     setRouter(adminRouter);
                 } else if (result?.data?.role === "maintenance") {
                     setRouter(maintenanceRouter);
+                } else if (result?.data?.role === "requester") {
+                    setRouter(requesterRouter);
                 } else {
                     setRouter(guestRouter);
                 }
             } catch (error) {
-                setRouter(guestRouter); // In case of error, fallback to guestRouter
+                setRouter(guestRouter); 
             }
         };
         loadUser();
     }, [token, getMe]);
     
     if (!router) {
-        return <div>Loading...</div>; // Show loading state until router is set
+        return <div><Lottie animationData={LoadingAnimation} loop={true} /></div>; 
     }
 
     console.log('test router', user)

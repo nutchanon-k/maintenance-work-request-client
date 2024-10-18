@@ -10,7 +10,7 @@ import useUserStore from '../../store/UserStore'
 const ShowRequestDetail = () => {
     const navigate = useNavigate()
     const { id } = useParams()
-    console.log("id from params", id)
+    // console.log("id from params", id)
 
     const currentTask = useRequestTaskStore(state => state.currentTask)
     const deleteRequestTask = useRequestTaskStore(state => state.deleteRequestTask)
@@ -21,9 +21,9 @@ const ShowRequestDetail = () => {
 
 
     // console.log(user.role, user.level)
-    const role = user.role
-    const level = user.level
-    console.log(currentTask)
+    const role = user?.role
+    const level = user?.level
+    // console.log(currentTask)
 
     const [reqTask, setReqTask] = useState('')
     const [isOpen, setIsOpen] = useState(false)
@@ -32,12 +32,23 @@ const ShowRequestDetail = () => {
 
     // เผื่อข้อมูล update ใหม่ เลยให้ดึงข้อมูลใหม่อีกครั้งตอนเริ่มต้น
     useEffect(() => {
-        getRequestTask(token, id)
+        const checkId = async () => {
+            try{
+                const result = await getRequestTask(token, id)
+                console.log(result)
+                if (result.length == 0 || !result) {
+                    navigate('/not-found')
+                }
+            }catch(error){
+                console.log(error)
+            }
+        }
+        checkId()
     }, [])
 
 
     useEffect(() => {
-        if (currentTask) {
+        if (currentTask && currentTask?.length > 0) {
             setReqTask(currentTask[0])
         }
     }, [currentTask])
@@ -186,7 +197,7 @@ const ShowRequestDetail = () => {
                                     Back
                                 </Link>
                                 {/* Assign button */}
-                                <Link to={`/create-maintenance-task`} className="btn btn-primary w-[250px] mt-4" >
+                                <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[250px] mt-4" >
                                     Assign
                                 </Link>
                                 {/* Edit button */}
@@ -201,7 +212,7 @@ const ShowRequestDetail = () => {
                                         Back
                                     </Link>
                                     {/* Assign button */}
-                                    <Link to={`/create-maintenance-task`} className="btn btn-primary w-[250px] mt-4" >
+                                    <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[250px] mt-4" >
                                         Assign
                                     </Link>
                                 </div>

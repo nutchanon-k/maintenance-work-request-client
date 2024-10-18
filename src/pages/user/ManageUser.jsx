@@ -9,10 +9,11 @@ const ManageMember = () => {
     const allUser = useUserStore((state) => state.allUser)
     const token = useUserStore((state) => state.token)
     const getAllUser =  useUserStore((state) => state.getAllUser)
-
+    const getLocationAndDepartmentData =  useUserStore((state) => state.getLocationAndDepartmentData) 
 
     useEffect(() => {
       getAllUser(token)
+      getLocationAndDepartmentData(token)
     }, [])
     
     console.log(allUser)

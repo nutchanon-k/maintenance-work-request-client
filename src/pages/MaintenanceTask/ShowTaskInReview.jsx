@@ -11,7 +11,7 @@ const ShowTaskInReview = () => {
     const navigate = useNavigate()
     const { id } = useParams()
 
-
+    {/* store */ }
     const currentMaintenanceTask = useMaintenanceTaskStore(state => state.currentMaintenanceTask)
     const getMaintenanceTask = useMaintenanceTaskStore(state => state.getMaintenanceTask)
     const token = useUserStore(state => state.token)
@@ -19,6 +19,8 @@ const ShowTaskInReview = () => {
     const getMaintenanceTaskForCheckAllSuccess = useMaintenanceTaskStore(state => state.getMaintenanceTaskForCheckAllSuccess) // getMaintenanceTaskForCheckAllSuccess
     const maintenanceTaskByRequestId = useMaintenanceTaskStore(state => state.maintenanceTaskByRequestId) // maintenanceTaskForCheckAllSuccess
     const updateRTStatus = useRequestTaskStore(state => state.updateRTStatus)
+    const user = useUserStore(state => state.user)
+
 
     const [mTask, setMTask] = useState('')
     const [showPicBefore, setShowPicBefore] = useState(false)
@@ -29,25 +31,35 @@ const ShowTaskInReview = () => {
 
 
     useEffect(() => {
-        getMaintenanceTask(token, id)
+        const checkId = async () => {
+            try {
+                const result = await getMaintenanceTask(token, id)
+                if (result.length == 0 || !result) {
+                    navigate('/not-found')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        checkId()
     }, [])
 
     useEffect(() => {
         if (currentMaintenanceTask) {
             setMTask(currentMaintenanceTask[0])
-            getMaintenanceTaskForCheckAllSuccess(token, currentMaintenanceTask[0].requestId)
+            getMaintenanceTaskForCheckAllSuccess(token, currentMaintenanceTask[0]?.requestId)
         }
     }, [currentMaintenanceTask])
 
-    // console.log(maintenanceTaskByRequestId)
+
     const handleAccept = async () => {
-        const response = await updateMaintenanceTask(token, { status: 'success', acceptTime: new Date().toISOString() }, mTask.id)
 
         //check all success MT for change RT status to success
         const checkSuccess = maintenanceTaskByRequestId.filter((item) => item.status === 'success')
-        if (maintenanceTaskByRequestId.length - checkSuccess.length === 1) {
+        if (Number(maintenanceTaskByRequestId.length) - Number(checkSuccess.length) === 1) {
             updateRTStatus(token, { status: 'success' }, mTask.requestId)
         }
+        const response = await updateMaintenanceTask(token, { status: 'success', acceptTime: new Date().toISOString(), isRejected: false }, mTask.id)
 
         toast.success(response.data.message)
         navigate('/maintenance-success')
@@ -87,6 +99,8 @@ const ShowTaskInReview = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* body */}
                 <div className="flex flex-col items-center space-y-4 p-6 bg-gray-50 min-h-screen">
                     <div className="flex justify-between w-full max-w-5xl">
 
@@ -97,8 +111,8 @@ const ShowTaskInReview = () => {
                         {/* Right section - Image and buttons */}
                         <div className="w-1/2 flex flex-col items-end space-y-4">
 
-                            {/* reject button */}
-                            {mTask?.status === "inReview" ?
+                            {/* reject button  !check user is not maintenance */}
+                            {mTask?.status === "inReview" && user?.role !== "maintenance" ?
                                 <button
                                     className="btn btn-outline w-[150px] btn-error mt-4"
                                     onClick={() => {
@@ -111,7 +125,7 @@ const ShowTaskInReview = () => {
                                 <></>
                             }
 
-
+                            {/*  Before Image */}
                             <div
                                 className="relative w-72 h-48 border rounded-lg overflow-hidden hover:cursor-pointer hover:opacity-80 active:transform active:scale-95"
                                 onClick={() => {
@@ -120,7 +134,7 @@ const ShowTaskInReview = () => {
                                 }}
                             >
                                 <p>Before image</p>
-                                {/* Image */}
+
                                 {mTask?.requestTask?.image ?
                                     <img
                                         src={mTask?.requestTask?.image}  // Placeholder for the image
@@ -131,6 +145,7 @@ const ShowTaskInReview = () => {
                                     <NoPhotoIcon className="w-full h-full object-cover" />}
                             </div>
 
+                            {/* After Image */}
                             <div
                                 className="relative w-72 h-48 border rounded-lg overflow-hidden hover:cursor-pointer hover:opacity-80 active:transform active:scale-95"
                                 onClick={() => {
@@ -139,7 +154,6 @@ const ShowTaskInReview = () => {
                                 }}
                             >
                                 <p>After image</p>
-                                {/* Image */}
                                 {mTask?.image ?
                                     <img
                                         src={mTask?.image}  // Placeholder for the image
@@ -149,12 +163,14 @@ const ShowTaskInReview = () => {
                                     /> :
                                     <NoPhotoIcon className="w-full h-full object-cover" />}
                             </div>
+
                         </div>
                     </div>
+
+
                     {/* Check status and choose Buttons */}
 
-
-                    {mTask?.status === "inReview" ?
+                    {mTask?.status === "inReview" && user?.role !== "maintenance" ?
                         <div className=' flex justify-between w-full max-w-5xl items-end'>
                             <Link className="btn btn-outline  w-[150px]" to="/maintenance-in-review">
                                 Back
@@ -170,141 +186,144 @@ const ShowTaskInReview = () => {
                             </button>
                         </div>
                         :
-                        <div className=' flex justify-end w-full max-w-5xl items-end'>
-                            <Link className="btn btn-outline  w-[150px]" to="/maintenance-success">
-                                Back
-                            </Link>
+                        mTask?.status === "inReview" ?
+                            <div className=' flex justify-end w-full max-w-5xl items-end'>
+                                <Link className="btn btn-outline  w-[150px]" to="/maintenance-in-review">
+                                    Back
+                                </Link>
+                            </div>
+                            :
+                            <div className=' flex justify-end w-full max-w-5xl items-end'>
+                                <Link className="btn btn-outline  w-[150px]" to="/maintenance-success">
+                                    Back
+                                </Link>
+                            </div>
+                    }
+                </div>
+            </div >
+
+
+
+
+            {/* modal */}
+
+            {/* image before modal */}
+            <dialog id="picture_before_modal" className="modal" onClose={() => { setShowPicBefore(false) }}>
+                <div className="modal-box">
+
+                    <button
+                        type='button'
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        onClick={e => e.target.closest('dialog').close()}
+                    >
+                        ✕
+                    </button>
+
+                    {showPicBefore && mTask?.requestTask?.image ?
+                        <img
+                            src={mTask?.requestTask?.image}  // Placeholder for the image
+                            alt="Machine"
+                            className="w-full h-full object-cover"
+                        />
+                        :
+                        <NoPhotoIcon className="w-full h-full object-cover" />}
+                </div>
+
+            </dialog>
+
+            {/* image after modal */}
+            <dialog id="picture_after_modal" className="modal" onClose={() => { setShowPicAfter(false) }}>
+                <div className="modal-box">
+
+                    <button
+                        type='button'
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        onClick={e => e.target.closest('dialog').close()}
+                    >
+                        ✕
+                    </button>
+
+                    {showPicAfter && mTask?.image ?
+                        <img
+                            src={mTask?.image}  // Placeholder for the image
+                            alt="Machine"
+                            className="w-full h-full object-cover"
+                        />
+                        :
+                        <NoPhotoIcon className="w-full h-full object-cover" />}
+                </div>
+
+            </dialog>
+
+            {/* confirm accept */}
+            <dialog id="confirm_accept_finish_modal" className="modal" onClose={() => { setShowConfirmAccept(false) }}>
+                <div className="modal-box">
+                    <button
+                        type='button'
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        onClick={e => e.target.closest('dialog').close()}
+                    >
+                        ✕
+                    </button>
+                    {showConfirmAccept &&
+                        <div>
+                            <h3 className="font-bold text-lg text-info">Are you sure to accept this task?</h3>
+                            <div className="modal-action">
+                                <button
+                                    className="btn btn-info btn-outline"
+                                    onClick={async () => {
+                                        await handleAccept()
+                                        await handleAllSuccess()
+                                        document.getElementById('confirm_accept_finish_modal').close()
+                                    }}>
+                                    Accept
+                                </button>
+                            </div>
                         </div>
                     }
-
-                
-            </div>
-        </div >
-
-
-
-            {/* modal */ }
-
-
-    {/* image before modal */ }
-    <dialog id="picture_before_modal" className="modal" onClose={() => { setShowPicBefore(false) }}>
-        <div className="modal-box">
-
-            <button
-                type='button'
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={e => e.target.closest('dialog').close()}
-            >
-                ✕
-            </button>
-
-            {showPicBefore && mTask?.requestTask?.image ?
-                <img
-                    src={mTask?.requestTask?.image}  // Placeholder for the image
-                    alt="Machine"
-                    className="w-full h-full object-cover"
-                />
-                :
-                <NoPhotoIcon className="w-full h-full object-cover" />}
-        </div>
-
-    </dialog>
-
-    {/* image after modal */ }
-    <dialog id="picture_after_modal" className="modal" onClose={() => { setShowPicAfter(false) }}>
-        <div className="modal-box">
-
-            <button
-                type='button'
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={e => e.target.closest('dialog').close()}
-            >
-                ✕
-            </button>
-
-            {showPicAfter && mTask?.image ?
-                <img
-                    src={mTask?.image}  // Placeholder for the image
-                    alt="Machine"
-                    className="w-full h-full object-cover"
-                />
-                :
-                <NoPhotoIcon className="w-full h-full object-cover" />}
-        </div>
-
-    </dialog>
-
-
-
-    {/* confirm accept */ }
-    <dialog id="confirm_accept_finish_modal" className="modal" onClose={() => { setShowConfirmAccept(false) }}>
-        <div className="modal-box">
-            <button
-                type='button'
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={e => e.target.closest('dialog').close()}
-            >
-                ✕
-            </button>
-            {showConfirmAccept &&
-                <div>
-                    <h3 className="font-bold text-lg text-info">Are you sure to accept this task?</h3>
-                    <div className="modal-action">
-                        <button
-                            className="btn btn-info btn-outline"
-                            onClick={async () => {
-                                await handleAccept()
-                                await handleAllSuccess()
-                                document.getElementById('confirm_accept_finish_modal').close()
-                            }}>
-                            Accept
-                        </button>
-                    </div>
                 </div>
-            }
-        </div>
-    </dialog>
+            </dialog>
 
-    {/* confirm reject */ }
-    <dialog id="confirm_reject_mTask_modal" className="modal" onClose={() => { setShowConfirmReject(false) }}>
-        <div className="modal-box">
-            <button
-                type='button'
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                onClick={e => e.target.closest('dialog').close()}
-            >
-                ✕
-            </button>
-            {showConfirmReject &&
-                <div>
-                    <h3 className="font-bold text-lg text-error">Are you sure to return this task to backlog?</h3>
-                    <div className="modal-action flex-col gap-2 items-center">
-                        <form className='w-full '>
-                            <p className='font-bold text-error'> Reject Reason</p>
-                            <textarea
-                                name="rejectReason"
-                                value={rejectReason}
-                                className="textarea textarea-bordered w-full mt-2 "
-                                placeholder="Reason for reject"
-                                onChange={(e) => setRejectReason(e.target.value)}
-                                rows={rejectReason.split('\n').length}
-                            />
-                        </form>
-                        <div className='w-full flex justify-end mt-2'>
-                            <button
-                                className="btn btn-error btn-outline w-[150px] "
-                                onClick={() => {
-                                    handleReject()
-                                    document.getElementById('confirm_reject_mTask_modal').close()
-                                }}>
-                                Reject
-                            </button>
+            {/* confirm reject */}
+            <dialog id="confirm_reject_mTask_modal" className="modal" onClose={() => { setShowConfirmReject(false) }}>
+                <div className="modal-box">
+                    <button
+                        type='button'
+                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                        onClick={e => e.target.closest('dialog').close()}
+                    >
+                        ✕
+                    </button>
+                    {showConfirmReject &&
+                        <div>
+                            <h3 className="font-bold text-lg text-error">Are you sure to return this task to backlog?</h3>
+                            <div className="modal-action flex-col gap-2 items-center">
+                                <form className='w-full '>
+                                    <p className='font-bold text-error'> Reject Reason</p>
+                                    <textarea
+                                        name="rejectReason"
+                                        value={rejectReason}
+                                        className="textarea textarea-bordered w-full mt-2 "
+                                        placeholder="Reason for reject"
+                                        onChange={(e) => setRejectReason(e.target.value)}
+                                        rows={rejectReason.split('\n').length}
+                                    />
+                                </form>
+                                <div className='w-full flex justify-end mt-2'>
+                                    <button
+                                        className="btn btn-error btn-outline w-[150px] "
+                                        onClick={() => {
+                                            handleReject()
+                                            document.getElementById('confirm_reject_mTask_modal').close()
+                                        }}>
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
-            }
-        </div>
-    </dialog>
+            </dialog>
         </>
     )
 
