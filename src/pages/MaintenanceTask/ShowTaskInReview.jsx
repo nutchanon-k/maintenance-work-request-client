@@ -20,7 +20,7 @@ const ShowTaskInReview = () => {
     const maintenanceTaskByRequestId = useMaintenanceTaskStore(state => state.maintenanceTaskByRequestId) // maintenanceTaskForCheckAllSuccess
     const updateRTStatus = useRequestTaskStore(state => state.updateRTStatus)
     const user = useUserStore(state => state.user)
-
+    const updateMaintenanceTaskStatus = useMaintenanceTaskStore(state => state.updateMaintenanceTaskStatus)
 
     const [mTask, setMTask] = useState('')
     const [showPicBefore, setShowPicBefore] = useState(false)
@@ -59,7 +59,7 @@ const ShowTaskInReview = () => {
         if (Number(maintenanceTaskByRequestId.length) - Number(checkSuccess.length) === 1) {
             updateRTStatus(token, { status: 'success' }, mTask.requestId)
         }
-        const response = await updateMaintenanceTask(token, { status: 'success', acceptTime: new Date().toISOString(), isRejected: false }, mTask.id)
+        const response = await updateMaintenanceTaskStatus(token, { status: 'success', acceptTime: new Date().toISOString(), isRejected: false }, mTask.id)
 
         toast.success(response.data.message)
         navigate('/maintenance-success')
@@ -67,7 +67,7 @@ const ShowTaskInReview = () => {
     };
 
     const handleReject = async () => {
-        const response = await updateMaintenanceTask(token, { status: 'backlog', isRejected: true, rejectReason: rejectReason }, mTask.id)
+        const response = await updateMaintenanceTaskStatus(token, { status: 'backlog', isRejected: true, rejectReason: rejectReason }, mTask.id)
         toast.success(response.data.message)
         navigate('/maintenance-backlog')
         console.log('Reject Request');

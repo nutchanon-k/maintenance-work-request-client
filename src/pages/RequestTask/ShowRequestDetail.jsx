@@ -12,25 +12,24 @@ const ShowRequestDetail = () => {
     const { id } = useParams()
     // console.log("id from params", id)
 
-    const currentTask = useRequestTaskStore(state => state.currentTask)
-    const deleteRequestTask = useRequestTaskStore(state => state.deleteRequestTask)
-    const resetCurrentTask = useRequestTaskStore(state => state.resetCurrentTask)
-    const token = useUserStore(state => state.token)
-    const getRequestTask = useRequestTaskStore(state => state.getRequestTask)
-    const user = useUserStore(state => state.user)
+    const currentTask = useRequestTaskStore(state => state?.currentTask)
+    const deleteRequestTask = useRequestTaskStore(state => state?.deleteRequestTask)
+    const resetCurrentTask = useRequestTaskStore(state => state?.resetCurrentTask)
+    const token = useUserStore(state => state?.token)
+    const getRequestTask = useRequestTaskStore(state => state?.getRequestTask)
+    const user = useUserStore(state => state?.user)
 
-
-    // console.log(user.role, user.level)
+    
     const role = user?.role
     const level = user?.level
-    // console.log(currentTask)
+    
 
     const [reqTask, setReqTask] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
 
 
-    // เผื่อข้อมูล update ใหม่ เลยให้ดึงข้อมูลใหม่อีกครั้งตอนเริ่มต้น
+    // เผื่อข้อมูล update ใหม่ เลยให้ดึงข้อมูลใหม่อีกครั้งตอนเริ่มต้น 
     useEffect(() => {
         const checkId = async () => {
             try{
@@ -39,6 +38,7 @@ const ShowRequestDetail = () => {
                 if (result.length == 0 || !result) {
                     navigate('/not-found')
                 }
+                setReqTask(result[0])
             }catch(error){
                 console.log(error)
             }
@@ -47,11 +47,11 @@ const ShowRequestDetail = () => {
     }, [])
 
 
-    useEffect(() => {
-        if (currentTask && currentTask?.length > 0) {
-            setReqTask(currentTask[0])
-        }
-    }, [currentTask])
+    // useEffect(() => {
+    //     if (currentTask && currentTask?.length > 0) {
+    //         setReqTask(currentTask[0])
+    //     }
+    // }, [currentTask])
 
     // console.log(reqTask)
 
@@ -159,7 +159,7 @@ const ShowRequestDetail = () => {
                         {/* Right section - Image and buttons */}
                         <div className="w-1/2 flex flex-col items-end space-y-4">
                             {/* Delete button */}
-                            {reqTask.status === "inProgress" ?
+                            {reqTask.status === "inProgress" && role === "admin" && role === "requester" ?
                                 <button
                                     className="btn btn-outline btn-error w-[150px]  "
                                     onClick={() => {
@@ -197,7 +197,7 @@ const ShowRequestDetail = () => {
                                     Back
                                 </Link>
                                 {/* Assign button */}
-                                <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[250px] mt-4" >
+                                <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[150px] mt-4" >
                                     Assign
                                 </Link>
                                 {/* Edit button */}
@@ -212,14 +212,14 @@ const ShowRequestDetail = () => {
                                         Back
                                     </Link>
                                     {/* Assign button */}
-                                    <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[250px] mt-4" >
+                                    <Link to={`/create-maintenance-task/${id}`} className="btn btn-primary w-[150px] mt-4" >
                                         Assign
                                     </Link>
                                 </div>
                                 : role === "maintenance" && level === 'staff' ?
                                     <div className=' flex justify-between w-full max-w-5xl'>
                                         {/* Back button */}
-                                        <Link to={'/request-in-progress'} className="btn btn-outline w-[250px] mt-4" onClick={handleBack}>
+                                        <Link to={'/request-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
                                             Back
                                         </Link>
                                     </div>
@@ -244,6 +244,8 @@ const ShowRequestDetail = () => {
                 </div>
             </div>
             {/* modal */}
+
+            {/* Picture Modal */}
             <dialog id="picture_modal" className="modal" onClose={() => { setIsOpen(false) }}>
                 <div className="modal-box">
 
@@ -265,6 +267,8 @@ const ShowRequestDetail = () => {
                         <NoPhotoIcon className="w-full h-full object-cover" />}
                 </div>
             </dialog>
+
+            {/* Confirm Delete Modal */}
             <dialog id="confirm_delete_modal" className="modal" onClose={() => { setShowConfirm(false) }}>
                 <div className="modal-box">
 

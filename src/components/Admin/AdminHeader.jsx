@@ -8,8 +8,8 @@ import useRequestTaskStore from '../../store/RequestTaskStore';
 const AdminHeader = () => {
   const hdlLogout = useUserStore(state => state.hdlLogout)
   const user = useUserStore(state => state.user)
-  const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state.clearAllMaintenanceStore)
-  const clearAllRequestTaskStore = useRequestTaskStore(state => state.clearAllRequestTaskStore)
+  const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state?.clearAllMaintenanceStore)
+  const clearAllRequestTaskStore = useRequestTaskStore(state => state?.clearAllRequestTaskStore)
 
   console.log(user)
 

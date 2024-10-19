@@ -130,20 +130,19 @@ const ShowMaintenanceTask = () => {
             <div className="w-1/2 flex flex-col items-end space-y-4">
 
               {/* Delete or Return button */}
-              {user.role === "requester" ?
-                <></>
-                :
-                mTask?.status === "backlog" ?
+              {
+                mTask?.status === "backlog" && user.role !== "requester" && (user.role === "maintenance"  || user.role === "admin") && (user.level !== "staff" || user.role === "admin") ?
                   <button
                     className="btn btn-outline btn-error w-[150px]  "
                     onClick={() => {
                       setShowConfirm(true)
                       document.getElementById('confirm_delete_mTask_modal').showModal()
-                    }}
+                    }}updateMaintenanceTaskStatus 
                   >
                     Delete Task
                   </button>
                   :
+                  mTask?.status === "inProgress" && user.role !== "requester" ?
                   <button
                     className="btn btn-outline btn-error w-[200px]  "
                     onClick={() => {
@@ -153,7 +152,11 @@ const ShowMaintenanceTask = () => {
                   >
                     Return Task to Backlog
                   </button>
+                  :
+                  <></>
               }
+
+              {/*image */}
               <div
                 className="relative w-72 h-48 border rounded-lg overflow-hidden hover:cursor-pointer hover:opacity-80 active:transform active:scale-95"
                 onClick={() => {

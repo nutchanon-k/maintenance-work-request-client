@@ -51,7 +51,7 @@ const Login = () => {
           <Lottie animationData={maintenanceGear} loop={true} className='w-2/3' />
         </div>
         <div className='w-full  flex justify-center items-end'>
-          <div className="bg-gradient-to-r from-blue-100 to-blue-600 text-slate-100  bg-opacity-60 px-4 py-6  w-full flex justify-end items-center shadow-lg"> 
+          <div className="bg-gradient-to-r from-blue-100 to-blue-600 text-white bg-opacity-60 px-4 py-8  w-full flex justify-end items-center shadow-lg"> 
             <div className='flex flex-col justify-end items-end'>
               <h3 className="text-4xl font-bold mb-2">Maintenance Work Request</h3>
               <p className="text-lg font-semibold">Engineering system</p>
@@ -62,7 +62,7 @@ const Login = () => {
       {/* Right Side - Login Form */}
 
       <div className='flex w-1/2 justify-center items-center'>
-        <div className="w-[36rem] flex flex-col justify-center px-16 bg-white mb-10 mr-10">
+        <div className="w-[36rem] flex flex-col justify-center px-16 bg-white mb-10">
           <div className='flex gap-2 items-end '> 
             <h2 className="text-3xl font-semibold mb-6">Log in</h2>
             <Lottie animationData={staff} loop={true} className='h-16' />

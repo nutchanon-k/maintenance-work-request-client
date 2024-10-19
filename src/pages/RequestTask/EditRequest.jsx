@@ -15,9 +15,9 @@ const EditRequest = () => {
     // from store
     const user = useUserStore(state => state.user)
     const token = useUserStore(state => state.token)
-    const currentTask = useRequestTaskStore(state => state.currentTask)
-    const editRequestTask = useRequestTaskStore(state => state.editRequestTask)
-    const getRequestTask = useRequestTaskStore(state => state.getRequestTask)
+    const currentTask = useRequestTaskStore(state => state?.currentTask)
+    const editRequestTask = useRequestTaskStore(state => state?.editRequestTask)
+    const getRequestTask = useRequestTaskStore(state => state?.getRequestTask)
 
 
     // set state
@@ -40,6 +40,10 @@ const EditRequest = () => {
                 if (result.length == 0 || !result) {
                     navigate('/not-found')
                 }
+                setData(result[0])
+                setMachineId(result[0]?.machineId)
+                setFaultSymptoms(result[0]?.faultSymptoms)
+                setOldImage(result[0]?.image)
             } catch (error) {
                 console.log(error)
             }
@@ -47,14 +51,14 @@ const EditRequest = () => {
         checkId()
     }, [])
 
-    useEffect(() => {
-        if (currentTask && currentTask.length > 0) {
-            setData(currentTask[0])
-            setMachineId(currentTask[0]?.machineId)
-            setOldImage(currentTask[0]?.image)
-            setFaultSymptoms(currentTask[0]?.faultSymptoms)
-        }
-    }, [currentTask])
+    // useEffect(() => {
+    //     if (currentTask && currentTask.length > 0) {
+    //         setData(currentTask[0])
+    //         setMachineId(currentTask[0]?.machineId)
+    //         setOldImage(currentTask[0]?.image)
+    //         setFaultSymptoms(currentTask[0]?.faultSymptoms)
+    //     }
+    // }, [currentTask])
 
 
     // ดึงข้อมูลเครื่องจักรมาจาก API เพื่อ autofill

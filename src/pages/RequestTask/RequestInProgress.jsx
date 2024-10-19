@@ -19,7 +19,6 @@ const RequestInProgress = () => {
   // console.log(requestTasksInprogress)
   useEffect(() => {
     getRequestTaskInprogress(token)
-    resetCurrentTask()
   }, [])
 
   // console.log(currentTask)

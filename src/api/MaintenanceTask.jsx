@@ -66,3 +66,12 @@ export const getMaintenanceTaskByRequestIdAPI = async (token, requestId) => {
     })
     return result;
 }
+
+export const updateMaintenanceTaskStatusAPI = async (token, body, machineId) => {
+    const result = await axios.patch(`http://localhost:8000/maintenance-task/update-status/${machineId}`, body, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return result;
+}

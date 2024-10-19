@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import { toast } from 'react-toastify';
-import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI } from '../api/MaintenanceTask';
+import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI, updateMaintenanceTaskStatusAPI } from '../api/MaintenanceTask';
 import Swal from 'sweetalert2'
 
 const useMaintenanceTaskStore = create(persist((set, get) => ({
@@ -158,7 +158,17 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
         }catch(error){
             console.log(error)
         }
-    }
+    },
+
+    updateMaintenanceTaskStatus : async (token, body, maintenanceId) => {
+        try{
+            const result = await updateMaintenanceTaskStatusAPI(token, body, maintenanceId)
+        return result.data
+        
+    }catch(error){
+            console.log(error)
+        }
+    },
 
 
   }),{

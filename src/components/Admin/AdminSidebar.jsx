@@ -10,6 +10,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 
 
+
 const AdminSidebar = () => {
   const [isTaskExpanded, setIsTaskExpanded] = useState(false);
   const [isRequestTaskExpanded, setIsRequestTaskExpanded] = useState(false);
@@ -27,18 +28,19 @@ const AdminSidebar = () => {
       <div className="p-4">
         {/* Sidebar header */}
         <div className="flex items-center justify-between mb-6">
+
           <h2 className={`text-xl font-semibold text-secondary whitespace-nowrap transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0'}`}>
             <span className="text-3xl mr-2">•</span>
             Maintenance
             <br />
-            <span className="ml-6">Work Request</span>
+            <span className="ml-5">Work Request</span>
           </h2>
           <button
             onClick={toggleSidebar}
             className={`btn btn-ghost btn-circle ${isSidebarOpen ? '' : 'absolute left-2 top-4'}`}
             aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
           >
-            {isSidebarOpen ? <AiOutlineLeft size={32} /> : <AiOutlineRight size={32} />}
+            {isSidebarOpen ? <AiOutlineLeft size={24} /> : <AiOutlineRight size={24} />}
           </button>
         </div>
  
