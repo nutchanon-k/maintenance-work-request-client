@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const Calendar = ({selectedDate, setSelectedDate}) => {
+const Calendar = ({selectedDate, setSelectedDate, handleChangeDate}) => {
     
   const getTodayDate = () => {
     const today = new Date();
@@ -11,18 +11,20 @@ const Calendar = ({selectedDate, setSelectedDate}) => {
   };
 
   useEffect(() => {
-    setSelectedDate(getTodayDate());
+    // setSelectedDate(getTodayDate());
   }, []);
 
-  const handleDateChange = (e) => {
-    setSelectedDate(e.target.value);
+  // const handleDateChange = (e) => {
+  //   setSelectedDate(e.target.value);
     
-  };
+  // };
+  
   return (
     <input
             type="date"
+            name="date"
             value={selectedDate}
-            onChange={handleDateChange}
+            onChange={handleChangeDate}
             className="input input-bordered w-full max-w-xs"
           />
   )

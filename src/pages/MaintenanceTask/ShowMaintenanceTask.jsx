@@ -39,13 +39,15 @@ const ShowMaintenanceTask = () => {
         if (result.length == 0 || !result) {
           navigate('/not-found')
         }
+        // setMTask(result[0])
+        // setNote(result[0]?.note)
+
       } catch (error) {
         console.log(error)
       }
     }
     checkId()
-  }
-    , [])
+  }, [])
 
 
   useEffect(() => {
@@ -131,7 +133,7 @@ const ShowMaintenanceTask = () => {
 
               {/* Delete or Return button */}
               {
-                mTask?.status === "backlog" && user.role !== "requester" && (user.role === "maintenance"  || user.role === "admin") && (user.level !== "staff" || user.role === "admin") ?
+                mTask?.status === "backlog" && user?.role !== "requester" && (user?.role === "maintenance"  || user?.role === "admin") && (user?.level !== "staff" || user?.role === "admin") ?
                   <button
                     className="btn btn-outline btn-error w-[150px]  "
                     onClick={() => {
@@ -142,7 +144,7 @@ const ShowMaintenanceTask = () => {
                     Delete Task
                   </button>
                   :
-                  mTask?.status === "inProgress" && user.role !== "requester" ?
+                  mTask?.status === "inProgress" && user?.role !== "requester" ?
                   <button
                     className="btn btn-outline btn-error w-[200px]  "
                     onClick={() => {
@@ -179,7 +181,7 @@ const ShowMaintenanceTask = () => {
 
 
           {/* Check role,status  for choose Buttons */}
-          {user.role === "requester" && mTask?.status === "backlog" ?
+          {user?.role === "requester" && mTask?.status === "backlog" ?
             <div className=' flex justify-end w-full max-w-5xl'>
               {/* Back button */}
               <Link to={'/maintenance-backlog'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>
@@ -187,7 +189,7 @@ const ShowMaintenanceTask = () => {
               </Link>
             </div>
             :
-            user.role === "requester" && mTask?.status === "inProgress" ?
+            user?.role === "requester" && mTask?.status === "inProgress" ?
               <div className=' flex justify-end w-full max-w-5xl'>
                 {/* Back button */}
                 <Link to={'/maintenance-in-progress'} className="btn btn-outline w-[150px] mt-4" onClick={handleBack}>

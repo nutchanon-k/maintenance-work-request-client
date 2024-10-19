@@ -16,6 +16,11 @@ const useUserStore = create(persist((set, get) => ({
   departmentData: [],
   allUser : [],
   currentUser : null,
+  searchText : '',
+
+  setSearchText : (text) => {
+    set({searchText : text})
+  },
 
   hdlLogin: async (body) => {
     try{

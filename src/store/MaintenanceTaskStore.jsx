@@ -113,6 +113,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
 
     getMaintenanceTask : async (token, maintenanceId) => {
         try{
+            console.log("IDDDDDD", maintenanceId)
         const result = await getMaintenanceTaskByIdAPI(token, maintenanceId)
         console.log(result.data.data)
         set({currentMaintenanceTask : result.data.data})

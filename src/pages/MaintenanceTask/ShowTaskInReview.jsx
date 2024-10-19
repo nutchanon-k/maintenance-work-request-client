@@ -37,6 +37,8 @@ const ShowTaskInReview = () => {
                 if (result.length == 0 || !result) {
                     navigate('/not-found')
                 }
+                // setMTask(result[0])
+                // getMaintenanceTaskForCheckAllSuccess(token, result[0]?.requestId)
             } catch (error) {
                 console.log(error)
             }

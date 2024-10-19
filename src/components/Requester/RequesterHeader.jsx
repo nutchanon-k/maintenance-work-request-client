@@ -10,8 +10,11 @@ const RequesterHeader = () => {
   const user = useUserStore(state => state.user)
   const clearAllMaintenanceStore = useMaintenanceTaskStore(state => state.clearAllMaintenanceStore)
   const clearAllRequestTaskStore = useRequestTaskStore(state => state.clearAllRequestTaskStore)
+  const setSearchText = useUserStore(state => state.setSearchText)
+  const searchText = useUserStore(state => state.searchText)
 
-  console.log(user)
+  const [text, setText] = useState(searchText)
+  // console.log(user)
 
   const handleLogout = () => {
     hdlLogout()
@@ -19,12 +22,25 @@ const RequesterHeader = () => {
     clearAllRequestTaskStore()
   }
 
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setSearchText(text)
+    }, 500)
+    return () => clearTimeout(delay)
+  }, [text])
+
   return (
     <div className="navbar bg-base-100 shadow-md p-4 h-20">
       <div className="flex-1">
         {/* Search Box */}
         <label className="input input-bordered flex items-center gap-2">
-          <input type="text" className="grow " placeholder="Search " />
+          <input 
+          type="text" 
+          value={text}
+          className="grow" 
+          placeholder="Search "
+          onChange={(e) => setText(e.target.value)} 
+          />
           <SearchIcon/>
         </label>
       </div>

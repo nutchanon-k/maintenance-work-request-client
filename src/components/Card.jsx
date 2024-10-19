@@ -57,6 +57,7 @@ export function CardMaintenance(props) {
     const typeOfFailure = maintenanceTask?.typeOfFailure?.details
 
     const handleClick = (e) => {
+        console.log("maintenanceID", maintenanceTask.id)
         getMaintenanceTask(token, maintenanceTask.id)
     }
 
@@ -76,7 +77,7 @@ export function CardMaintenance(props) {
                 <div className="card-body">
                     <div className='flex justify-between'>
                         {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
-                        {typeOfFailure === "Mechanical" ? <div className="badge badge-primary">{typeOfFailure}</div> : typeOfFailure === "Electrical" ? <div className="badge badge-secondary">{typeOfFailure}</div> : <div className="badge badge-info">{typeOfFailure}</div>}
+                        {typeOfFailure === "Mechanical" ? <div className="badge badge-primary">{typeOfFailure}</div> : typeOfFailure === "Electrical" ? <div className="badge badge-secondary">{typeOfFailure}</div> : <div className="badge badge-warning">{typeOfFailure}</div>}
                     </div>
                     <h2 className={`card-title ${maintenanceTask.isRejected ? "text-error" : ""}`}><span className='font-bold'>Maintenance Task ID. </span>{`${maintenanceTask?.id}`}</h2>
                     <p className='text-sm text-gray-500 font-b'><span className='font-bold'>Machine ID. </span>{`${maintenanceTask?.machineId}`}</p>
@@ -103,41 +104,41 @@ export function CardUser(props) {
     return (
         <Link
             className="card bg-base-100 w-[280px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all"
-            to={`/show-user/${member.id}`}
+            to={`/show-user/${member?.id}`}
         >
             <div className='flex justify-between px-4 pt-4'>
                 <div className={
-                    member.location.name === "Engineering Shop" ?
+                    member?.location?.name === "Engineering Shop" ?
                         "badge badge-primary badge-outline" :
-                        member.location.name === "Factory1" ?
+                        member?.location?.name === "Factory1" ?
                             "badge badge-secondary badge-outline" :
-                            member.location.name === "Factory2" ?
+                            member?.location?.name === "Factory2" ?
                                 "badge badge-accent badge-outline" :
                                 "badge badge-info badge-outline"
 
-                }>{member.location.name}</div>
+                }>{member?.location?.name}</div>
                 <div className={
-                    member.role === "admin" ?
+                    member?.role === "admin" ?
                         "badge badge-primary " :
-                        member.role === "maintenance" ?
+                        member?.role === "maintenance" ?
                             "badge badge-secondary " :
                             "badge badge-neutral"
-                }>{member.role}</div>
+                }>{member?.role}</div>
             </div>
             <figure className="px-10 pt-10">
                 <img
-                    src={member.picture || `../src/assets/avatar-man.png`}
+                    src={member?.picture || `../src/assets/avatar-man.png`}
                     alt="avatar"
                     className="rounded-xl"
                 />
             </figure>
             <div className="card-body items-center">
-                <h2 className="card-title">{member.firstName} {member.lastName}</h2>
+                <h2 className="card-title">{member?.firstName} {member?.lastName}</h2>
                 <div>
-                    <p><span className='font-bold '>Email : </span>{member.email}</p>
-                    <p><span className='font-bold'>Position : </span>{member.level}</p>
-                    <p><span className='font-bold'>Department : </span>{member.department.name}</p>
-                    <p><span className='font-bold'>Dept. Type : </span>{member.department.departmentType}</p>
+                    <p><span className='font-bold '>Email : </span>{member?.email}</p>
+                    <p><span className='font-bold'>Position : </span>{member?.level}</p>
+                    <p><span className='font-bold'>Department : </span>{member?.department.name}</p>
+                    <p><span className='font-bold'>Dept. Type : </span>{member?.department.departmentType}</p>
                 </div>
                 <div className="card-actions mt-2">
                     <button className="btn btn-outline btn-secondary  ">Click to see</button>
