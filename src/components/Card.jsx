@@ -41,7 +41,7 @@ export function CardRequest(props) {
                     <p className='text-sm text-gray-500'><span className='font-bold'>Request by. </span>{ReqTask.employee?.firstName} {ReqTask.employee?.lastName}</p>
                 </div>
                 <figure >
-                    {ReqTask.image ? <img src={ReqTask.image} alt="machine" className='w-full' /> : <PicMachineDefault className='w-full' />}
+                    {ReqTask.image ? <img src={ReqTask.image} alt="machine" className=' h-56 w-full' /> : <PicMachineDefault className='h-56 w-full' />}
                 </figure>
             </div>
         </Link>
@@ -90,7 +90,7 @@ export function CardMaintenance(props) {
                     </figure>
                     :
                     <figure>
-                        {maintenanceTask?.requestTask?.image ? <img src={maintenanceTask?.requestTask?.image} alt="machine" className='w-full' /> : <PicMachineDefault className='w-full' />}
+                        {maintenanceTask?.requestTask?.image ? <img src={maintenanceTask?.requestTask?.image} alt="machine" className=' h-56 w-full' /> : <PicMachineDefault className='h-56 w-full' />}
                     </figure>
                 }
             </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Avatar from '../Avatar';
 import { SearchIcon } from '../../icons/Icons';
 import useUserStore from '../../store/UserStore';
