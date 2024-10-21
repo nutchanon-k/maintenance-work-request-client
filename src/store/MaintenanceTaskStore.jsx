@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import { toast } from 'react-toastify';
-import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI, updateMaintenanceTaskStatusAPI } from '../api/MaintenanceTask';
+import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getAllMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getRootCauseFailureAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI, updateMaintenanceTaskStatusAPI } from '../api/MaintenanceTask';
 import Swal from 'sweetalert2'
 
 const useMaintenanceTaskStore = create(persist((set, get) => ({
@@ -13,6 +13,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
     currentMaintenanceTask: null,
     typeOfRootCauses: null,
     loading : false,
+    rootCauseFailure : null,
 
 
     clearAllMaintenanceStore : () => {
@@ -128,7 +129,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
         try{
         const result = await deleteMaintenanceTaskAPI(token, maintenanceId)
         set(state=>({maintenanceTaskBacklog : state.maintenanceTaskBacklog.filter(task => task.id !== maintenanceId)}))
-        toast.success(result.data.message)
+        // toast.success(result.data.message)
         return result.data
         
     }catch(error){
@@ -138,14 +139,24 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
 
     updateMaintenanceTask : async (token, body, maintenanceId) => {
         try{
-            // console.log("body from store",token,body, maintenanceId)
         const result = await updateMaintenanceTaskAPI(token, body, maintenanceId)
-        // set(state=>({maintenanceTaskBacklog : state.maintenanceTaskBacklog.filter(task => task.id !== maintenanceId)}))
-        // toast.success(result.data.message)
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: result.data.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
         return result.data
         
     }catch(error){
             console.log(error)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+                footer: '<a href="#">Why do I have this issue?</a>'
+              });
         }
     },
 
@@ -170,6 +181,29 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
             console.log(error)
         }
     },
+
+
+
+    getDataRootCauseFailure : async (token) => {
+        try{
+            const result = await getRootCauseFailureAPI(token)
+            // console.log(result.data.data)
+            set({rootCauseFailure : result.data.data})
+            return result.data.data
+        }catch(error){
+            console.log(error)
+        }
+    },
+
+    getAllMaintenanceTask : async (token) => {
+        try{
+            const result = await getAllMaintenanceTaskAPI(token)
+            // console.log(result.data.data)
+            return result.data.data
+        }catch(error){
+            console.log(error)
+        }
+    }
 
 
   }),{

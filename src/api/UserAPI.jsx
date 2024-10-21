@@ -67,3 +67,12 @@ export const updateUserAPI = async (token, body, userId ) => {
     });
     return result;
 }
+
+export const changePasswordAPI = async (token, body, userId) => {
+    const result = await axios.patch(`http://localhost:8000/user/change-password/${userId}`, body, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return result;
+}

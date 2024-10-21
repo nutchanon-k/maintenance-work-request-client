@@ -5,6 +5,7 @@ import useRequestTaskStore from '../../store/RequestTaskStore'
 import { NoPhotoIcon } from '../../icons/Icons'
 import { toast } from 'react-toastify'
 import useUserStore from '../../store/UserStore'
+import Swal from 'sweetalert2'
 
 
 const ShowRequestDetail = () => {
@@ -19,10 +20,10 @@ const ShowRequestDetail = () => {
     const getRequestTask = useRequestTaskStore(state => state?.getRequestTask)
     const user = useUserStore(state => state?.user)
 
-    
+
     const role = user?.role
     const level = user?.level
-    
+
 
     const [reqTask, setReqTask] = useState('')
     const [isOpen, setIsOpen] = useState(false)
@@ -32,14 +33,14 @@ const ShowRequestDetail = () => {
     // เผื่อข้อมูล update ใหม่ เลยให้ดึงข้อมูลใหม่อีกครั้งตอนเริ่มต้น 
     useEffect(() => {
         const checkId = async () => {
-            try{
+            try {
                 const result = await getRequestTask(token, id)
                 console.log(result)
                 if (result.length == 0 || !result) {
                     navigate('/not-found')
                 }
                 setReqTask(result[0])
-            }catch(error){
+            } catch (error) {
                 console.log(error)
             }
         }
@@ -67,16 +68,50 @@ const ShowRequestDetail = () => {
 
     // console.log(reqTask.id)
     const handleDelete = async () => {
-        const result = await deleteRequestTask(token, reqTask.id);
-        // console.log(reqTask.id)
-        console.log(result);
-        if (!result) {
-            return;
-        }
-        resetCurrentTask();
-        toast.info(`Request ID ${reqTask.id} deleted successfully`);
-        console.log('Delete Request');
-        navigate('/request-in-progress')
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success ml-2",
+                cancelButton: "btn btn-error mr-2"
+            },
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then(async(result) => {
+            if (result.isConfirmed) {
+                try {
+                    const result = await deleteRequestTask(token, reqTask.id);
+                    if (result) {
+                        resetCurrentTask();
+                        navigate('/request-in-progress')
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+                swalWithBootstrapButtons.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "Your imaginary file is safe :)",
+                    icon: "error"
+                });
+            }
+        });
 
     };
 
@@ -159,13 +194,10 @@ const ShowRequestDetail = () => {
                         {/* Right section - Image and buttons */}
                         <div className="w-1/2 flex flex-col items-end space-y-4">
                             {/* Delete button */}
-                            {reqTask.status === "inProgress" && role === "admin" && role === "requester" ?
+                            {reqTask.status === "inProgress" && role !== "maintenance" ?
                                 <button
                                     className="btn btn-outline btn-error w-[150px]  "
-                                    onClick={() => {
-                                        setShowConfirm(true)
-                                        document.getElementById('confirm_delete_modal').showModal()
-                                    }}
+                                    onClick={handleDelete}
                                 >
                                     Delete Request
                                 </button> : ""}
@@ -268,35 +300,7 @@ const ShowRequestDetail = () => {
                 </div>
             </dialog>
 
-            {/* Confirm Delete Modal */}
-            <dialog id="confirm_delete_modal" className="modal" onClose={() => { setShowConfirm(false) }}>
-                <div className="modal-box">
 
-                    <button
-                        type='button'
-                        className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                        onClick={e => e.target.closest('dialog').close()}
-                    >
-                        ✕
-                    </button>
-
-                    {showConfirm &&
-                        <div>
-                            <h3 className="font-bold text-lg text-error">Are you sure you want to delete this request?</h3>
-                            <div className="modal-action">
-                                <button
-                                    className="btn btn-error btn-outline"
-                                    onClick={() => {
-                                        handleDelete()
-                                        document.getElementById('confirm_delete_modal').close()
-                                    }}>
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </dialog>
         </>
     )
 }

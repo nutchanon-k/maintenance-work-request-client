@@ -6,6 +6,8 @@ import { toast } from 'react-toastify'
 import { CloseIcon, UploadIcon } from '../../icons/Icons'
 import useRequestTaskStore from '../../store/RequestTaskStore'
 import { useNavigate } from 'react-router-dom'
+import LoadingBlack from '../../assets/LoadingBlack.json';
+import Lottie from 'lottie-react'
 
 const EditRequest = () => {
     // navigate
@@ -96,8 +98,9 @@ const EditRequest = () => {
             // }
             const result = await editRequestTask(token, body, data.id)
 
-            toast.success(result.data.message)
-            navigate(`/show-request-task/${id}`)
+            if (result) {
+                navigate(`/show-request-task/${id}`)
+            }
 
         } catch (error) {
             console.log(error)
@@ -291,8 +294,8 @@ const EditRequest = () => {
 
                     {/* Buttons */}
                     {loading ?
-                        <div className="flex justify-center mt-6">
-                            <span className="loading loading-bars loading-lg"></span>
+                        <div className="flex justify-center items-center mt-6 h-full">
+                            <Lottie animationData={LoadingBlack} loop={true} className='w-20 h-20' />
                         </div>
                         :
                         <div className="flex justify-between mt-6">

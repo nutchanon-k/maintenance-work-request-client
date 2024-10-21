@@ -68,3 +68,12 @@ export const updateRTStatusAPI = async (token, body, requestId) => {
     });
     return result;
 }
+
+export const getAllRequestTaskAPI = async (token) => {
+    const result = await axios.get(`http://localhost:8000/request-task`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return result;
+}

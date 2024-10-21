@@ -6,6 +6,9 @@ import { toast } from 'react-toastify'
 import { CloseIcon, UploadIcon } from '../../icons/Icons'
 import useRequestTaskStore from '../../store/RequestTaskStore'
 import { useNavigate } from 'react-router-dom'
+import LoadingBlack from '../../assets/LoadingBlack.json';
+import Lottie from 'lottie-react'
+import Swal from 'sweetalert2'
 
 
 const CreateNewRequest = () => {
@@ -15,7 +18,7 @@ const CreateNewRequest = () => {
     const user = useUserStore(state => state.user)
     const token = useUserStore(state => state.token)
     const createNewRequest = useRequestTaskStore(state => state.createRequestTask)
-    
+
 
 
     const [machineId, setMachineId] = useState('');
@@ -25,8 +28,8 @@ const CreateNewRequest = () => {
     const [loading, setLoading] = useState(false)
 
 
-    
-    
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -44,9 +47,9 @@ const CreateNewRequest = () => {
                 console.log(key, value)
             }
             const result = await createNewRequest(token, body)
-
-            toast.success(result.data.message)
-            navigate('/request-in-progress')
+            if (result) {
+                navigate('/request-in-progress')
+            }
 
         } catch (error) {
             console.log(error)
@@ -60,7 +63,7 @@ const CreateNewRequest = () => {
         setMachineData('')
     }
 
-    
+
     // ดึงข้อมูลเครื่องจักรมาจาก API
     useEffect(() => {
         if (machineId) {
@@ -71,7 +74,13 @@ const CreateNewRequest = () => {
                     })
                     .catch((err) => {
                         console.log("from catch", err)
-                        toast.error(err.response.data.message)
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: err.response.data.message,
+                            footer: "please try again"
+                        });
+
                     })
             }, 500);
             return () => clearTimeout(result);
@@ -219,13 +228,13 @@ const CreateNewRequest = () => {
 
                     {/* Buttons */}
                     {loading ?
-                        <div className="flex justify-center mt-6">
-                            <span className="loading loading-bars loading-lg"></span>
-                        </div> 
+                        <div className="flex justify-center items-center mt-6 h-full">
+                            <Lottie animationData={LoadingBlack} loop={true} className='w-20 h-20' />
+                        </div>
                         :
                         <div className="flex justify-between mt-6">
                             <Link to="/request-in-progress" className="btn btn-outline btn-error w-[150px]">
-                                Cancel 
+                                Cancel
                             </Link>
                             <button type="submit" className="btn btn-secondary w-[150px]">
                                 Submit

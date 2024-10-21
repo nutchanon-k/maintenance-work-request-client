@@ -75,3 +75,21 @@ export const updateMaintenanceTaskStatusAPI = async (token, body, machineId) => 
     })
     return result;
 }
+
+export const getRootCauseFailureAPI = async (token) => {
+    const result = await axios.get(`http://localhost:8000/maintenance-task//data-root-cause-failure`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return result
+}
+
+export const getAllMaintenanceTaskAPI = async (token) => {
+    const result = await axios.get(`http://localhost:8000/maintenance-task`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    return result
+}

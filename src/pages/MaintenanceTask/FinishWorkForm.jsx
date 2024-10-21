@@ -4,6 +4,8 @@ import useUserStore from '../../store/UserStore'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { CloseIcon, NoPhotoIcon, UploadIcon } from '../../icons/Icons'
+import LoadingBlack from '../../assets/LoadingBlack.json';
+import Lottie from 'lottie-react'
 
 const FinishWorkForm = () => {
 
@@ -18,34 +20,35 @@ const FinishWorkForm = () => {
     const [equipmentOption, setEquipmentOption] = useState('noEquipment');
 
     const [data, setData] = useState({
-        typeOfRootCauseId: null,
-        rootCauseDetail: null,
-        operationDetails: null,
-        preventingRecurrence: null,
-        equipmentUsed: null,
-        additionalSuggestions: null,
+        typeOfRootCauseId: currentMaintenanceTask[0]?.typeOfRootCauseId,
+        rootCauseDetail: currentMaintenanceTask[0]?.rootCauseDetail,
+        operationDetails: currentMaintenanceTask[0]?.operationDetails,
+        preventingRecurrence: currentMaintenanceTask[0]?.preventingRecurrence,
+        equipmentUsed: currentMaintenanceTask[0]?.equipmentUsed,
+        additionalSuggestions: currentMaintenanceTask[0]?.additionalSuggestions,
         finishTime: new Date().toISOString()
     })
 
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const [mTask, setMTask] = useState(null)
-   
+    const [oldImage, setOldImage] = useState(currentMaintenanceTask[0]?.image)
+
 
 
     useEffect(() => {
         const checkId = async () => {
             try {
-              const result = await getMaintenanceTask(token, id)
-              console.log(result)
-              if (result.length == 0 || !result) {
-                navigate('/not-found')
-              }
+                const result = await getMaintenanceTask(token, id)
+                console.log(result)
+                if (result.length == 0 || !result) {
+                    navigate('/not-found')
+                }
             } catch (error) {
-              console.log(error)
+                console.log(error)
             }
-          }
-          checkId()
+        }
+        checkId()
     }, [])
 
 
@@ -64,7 +67,7 @@ const FinishWorkForm = () => {
         setData({ ...data, equipmentUsed: e.target.value });
     };
 
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -86,8 +89,9 @@ const FinishWorkForm = () => {
                 console.log(key, value)
             }
             const result = await updateMaintenanceTask(token, body, mTask.id)
-            toast.success(result.data.message)
-            navigate('/maintenance-in-review')
+            if(result){
+                navigate('/maintenance-in-review')
+            }
 
         } catch (error) {
             console.log(error)
@@ -99,6 +103,7 @@ const FinishWorkForm = () => {
 
 
     return (
+        
         <div className='flex flex-col  '>
             {/* header */}
             <div className='flex justify-between p-4 '>
@@ -120,6 +125,10 @@ const FinishWorkForm = () => {
                 </div>
             </div>
 
+            <div>
+                
+            </div>
+
             {/* form */}
             <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md w-[600px]">
                 <h1 className="text-2xl font-bold mb-6">Maintenance Report</h1>
@@ -133,6 +142,7 @@ const FinishWorkForm = () => {
                             className="select select-bordered w-full"
                             name="typeOfRootCauseId"
                             onChange={handleChange}
+                            value={data.typeOfRootCauseId}
 
                         >
                             <option disabled selected>
@@ -249,6 +259,33 @@ const FinishWorkForm = () => {
                     </div>
 
                     {/* Upload image */}
+                    {oldImage ?
+                  <div className="flex items-center justify-center w-full  ">
+                    <div
+                      className="flex flex-col items-center justify-center w-full  border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 relative p-2"
+                      onClick={() => document.getElementById('input-file').click()}
+                    >
+                      <input
+                        type="file"
+                        id='input-file-picture'
+                        className="hidden"
+                        onChange={(e) => setImage(e.target.files[0])}
+                      />
+                      <div className='w-full absolute top-1 right-1  flex justify-end'>
+                        {oldImage && <CloseIcon
+                          className='w-10 h-10 hover:scale-110 active:scale-100 rounded-full cursor-pointer opacity-60'
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            document.getElementById('input-file-picture').value = '';
+                            setOldImage(null)
+                          }}
+                        />}
+
+                      </div>
+                      {oldImage && <img src={oldImage} className='w-1/2 h-full object-cover' />}
+                    </div>
+                  </div>
+                  :
                     <div className="col-span-2 form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Upload image</span>
@@ -285,21 +322,22 @@ const FinishWorkForm = () => {
                         </div>
                     </div>
 
+                    }   
 
                     {/* Buttons & loading */}
                     {loading ?
-                      <div className="flex justify-center mt-6">
-                          <span className="loading loading-bars loading-lg"></span>
-                      </div> 
-                      :
-                    <div className="flex justify-between mt-6">
-                        <Link to={`/show-maintenance-task/${id}`} type="button" className="btn btn-outline w-[150px]">
-                            Back
-                        </Link>
-                        <button type="submit" className="btn btn-secondary w-[150px]">
-                            Submit
-                        </button>
-                    </div>
+                        <div className="flex justify-center items-center mt-6 h-full">
+                            <Lottie animationData={LoadingBlack} loop={true} className='w-20 h-20' />
+                        </div>
+                        :
+                        <div className="flex justify-between mt-6">
+                            <Link to={`/show-maintenance-task/${id}`} type="button" className="btn btn-outline w-[150px]">
+                                Back
+                            </Link>
+                            <button type="submit" className="btn btn-secondary w-[150px]">
+                                Submit
+                            </button>
+                        </div>
                     }
                 </form>
             </div>

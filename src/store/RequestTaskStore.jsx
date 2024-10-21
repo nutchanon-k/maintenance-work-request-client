@@ -1,8 +1,8 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
-import { createRequestTaskAPI, deleteRequestTaskAPI, editRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus, updateIsAssignedAPI, updateRTStatusAPI } from '../api/RequestTask';
+import { createRequestTaskAPI, deleteRequestTaskAPI, editRequestTaskAPI, getAllRequestTaskAPI, getRequestTaskAPI, getRequestTaskByStatus, updateIsAssignedAPI, updateRTStatusAPI } from '../api/RequestTask';
 import { toast } from 'react-toastify';
-
+import Swal from 'sweetalert2'
 
 
 const useRequestTaskStore = create(persist((set, get) => ({
@@ -24,9 +24,22 @@ const useRequestTaskStore = create(persist((set, get) => ({
         try{
             const result = await createRequestTaskAPI(token,body)   
             set((state)=> ({requestTasksInprogress : [{...result.data.data }, ...state.requestTasksInprogress]}))
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: `${result.data.message}`,
+                showConfirmButton: false,
+                timer: 3000
+              });
             return result
         }catch(error){
             console.log(error)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+                footer: "please try again"
+              });
         }
     },
     getRequestTaskInprogress : async (token) => {
@@ -46,6 +59,7 @@ const useRequestTaskStore = create(persist((set, get) => ({
             return result.data.data
         }catch(error){
             console.log(error)
+            
         }
     },
     editRequestTask : async (token, body, requestId) => {
@@ -53,10 +67,22 @@ const useRequestTaskStore = create(persist((set, get) => ({
             console.log( 'reqID in store ' ,body)
             const result = await editRequestTaskAPI(token, body, requestId)
             set({currentTask : result.data.data})
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: `${result.data.message}`,
+                showConfirmButton: false,
+                timer: 3000
+              });
               return result
         }catch(error){
             console.log(error)
-            toast.error(error.response.data.message)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+                footer: "please try again"
+              });
         }
     },
     deleteRequestTask : async (token, requestId) => {
@@ -92,10 +118,22 @@ const useRequestTaskStore = create(persist((set, get) => ({
     updateIsAssigned : async (token, body, requestId) => {
         try{
             const result = await updateIsAssignedAPI (token, body, requestId)
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: `${result.data.message}`,
+                showConfirmButton: false,
+                timer: 3000
+              });
               return result
         }catch(error){
             console.log(error)
-            toast.error(error.response.data.message)
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+                footer: "please try again"
+              });
         }
     },
 
@@ -107,7 +145,16 @@ const useRequestTaskStore = create(persist((set, get) => ({
             console.log(error)
             toast.error(error.response.data.message)
         }
-    }
+    },
+
+    getAllRequestTask : async (token) => {
+        try{
+            const result = await getAllRequestTaskAPI(token)
+            return result.data.data
+        }catch(error){
+            console.log(error)
+        }
+    },
  
 
 

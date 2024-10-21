@@ -5,6 +5,7 @@ import useRequestTaskStore from '../../store/RequestTaskStore'
 import { NoPhotoIcon } from '../../icons/Icons'
 import { toast } from 'react-toastify'
 import useUserStore from '../../store/UserStore'
+import Swal from 'sweetalert2'
 
 const ShowUserDetails = () => {
   const navigate = useNavigate()
@@ -33,18 +34,54 @@ const ShowUserDetails = () => {
     checkId()
   }, [id])
 
-  console.log(currentUser)
-  const handleDelete = async () => {
-    try{
-    const result = await deleteUser(token, currentUser.id);
-    resetCurrentUser();
-    toast.info(`User ID ${currentUser.id} deleted successfully`);
-    navigate('/manage-users')
-  }catch(error){
-    console.log(error)
-  }
-};
+  // console.log(currentUser)
 
+
+const handleDeleteUser = async () => {
+  
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn btn-success ml-2" ,
+      cancelButton: "btn btn-error mr-2"
+    },
+    buttonsStyling: false
+  });
+
+   swalWithBootstrapButtons.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+    reverseButtons: true
+  }).then(async(result) => {
+    if (result.isConfirmed) {
+      try{
+        const result = await deleteUser(token, currentUser.id);
+        console.log(result)
+
+        if(result){
+        navigate('/manage-users')
+      }
+      }catch(error){
+        console.log(error)
+      }
+      
+    } else if (
+      /* Read more about handling dismissals below */
+      result.dismiss === Swal.DismissReason.cancel
+    ) {
+      swalWithBootstrapButtons.fire({
+        title: "Cancelled",
+        text: "Your imaginary file is safe :)",
+        icon: "error"
+      });
+    }
+  });
+  
+}
+  
 
   return (
     <>
@@ -62,8 +99,8 @@ const ShowUserDetails = () => {
           </div>
         </div>
         <div className='flex flex-col items-center'>
-          <div className="flex flex-col items-center space-y-4 p-6 bg-gray-50 w-full max-w-5xl">
-            <div className="flex justify-between w-full max-w-5xl">
+          <div className="flex flex-col items-center space-y-4 p-6 bg-gray-50 w-full max-w-4xl">
+            <div className="flex justify-between w-full max-w-4xl">
               <div className="w-1/2 space-y-4">
                 <span className="badge badge-success">{currentUser?.role}</span>
                 <div className="space-y-2">
@@ -95,8 +132,9 @@ const ShowUserDetails = () => {
                 <button
                   className="btn btn-outline btn-error w-[150px]  "
                   onClick={() => {
-                    setShowConfirm(true)
-                    document.getElementById('confirm_delete_user_modal').showModal()
+                    handleDeleteUser()
+                    // setShowConfirm(true)
+                    // document.getElementById('confirm_delete_user_modal').showModal()
                   }}
                 >
                   Delete User
@@ -123,7 +161,7 @@ const ShowUserDetails = () => {
           </div>
 
 
-          <div className=' flex justify-between w-full max-w-5xl px-6'>
+          <div className=' flex justify-between w-full max-w-4xl px-6'>
             {/* Back button */}
             <Link to={'/manage-users'} className="btn btn-outline w-[150px] mt-4" >
               Back
@@ -137,6 +175,9 @@ const ShowUserDetails = () => {
         </div>
 
       </div>
+
+      
+      {/* Image Modal */}
       <dialog id="picture_modal" className="modal" onClose={() => { setIsOpen(false) }}>
         <div className="modal-box">
 
@@ -158,34 +199,8 @@ const ShowUserDetails = () => {
             <NoPhotoIcon className="w-full h-full object-cover" />}
         </div>
       </dialog>
-      <dialog id="confirm_delete_user_modal" className="modal" onClose={() => { setShowConfirm(false) }}>
-        <div className="modal-box">
 
-          <button
-            type='button'
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={e => e.target.closest('dialog').close()}
-          >
-            ✕
-          </button>
-
-          {showConfirm &&
-            <div>
-              <h3 className="font-bold text-lg text-error">Are you sure to delete this User?</h3>
-              <div className="modal-action">
-                <button
-                  className="btn btn-error btn-outline"
-                  onClick={() => {
-                    handleDelete()
-                    document.getElementById('confirm_delete_user_modal').close()
-                  }}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          }
-        </div>
-      </dialog>
+     
     </>
   )
 }

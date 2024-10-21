@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { NoPhotoIcon } from '../../icons/Icons'
 import RequestDetails from '../../components/RequestDetails'
+import Swal from 'sweetalert2'
 
 
 
@@ -74,16 +75,53 @@ const ShowMaintenanceTask = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      const result = await deleteMaintenanceTask(token, mTask.id);
-      resetCurrentMaintenanceTask();
-      navigate('/maintenance-backlog')
+    
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success ml-2",
+            cancelButton: "btn btn-error mr-2"
+        },
+        buttonsStyling: false
+    });
 
-    } catch (error) {
-      console.log(error)
-    }
-    console.log("delete")
-  };
+    swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+    }).then(async(result) => {
+        if (result.isConfirmed) {
+            try {
+              const result = await deleteMaintenanceTask(token, mTask.id);
+                if (result) {
+                  resetCurrentMaintenanceTask();
+                  navigate('/maintenance-backlog')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+            swalWithBootstrapButtons.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+            });
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                text: "Your imaginary file is safe :)",
+                icon: "error"
+            });
+        }
+    });
+  }
+
+
 
   const handleReturn = async () => {
     try {
@@ -136,10 +174,7 @@ const ShowMaintenanceTask = () => {
                 mTask?.status === "backlog" && user?.role !== "requester" && (user?.role === "maintenance"  || user?.role === "admin") && (user?.level !== "staff" || user?.role === "admin") ?
                   <button
                     className="btn btn-outline btn-error w-[150px]  "
-                    onClick={() => {
-                      setShowConfirm(true)
-                      document.getElementById('confirm_delete_mTask_modal').showModal()
-                    }}updateMaintenanceTaskStatus 
+                    onClick={handleDelete}
                   >
                     Delete Task
                   </button>
@@ -259,35 +294,8 @@ const ShowMaintenanceTask = () => {
       </dialog>
 
 
-      {/* confirm delete */}
-      <dialog id="confirm_delete_mTask_modal" className="modal" onClose={() => { setShowConfirm(false) }}>
-        <div className="modal-box">
+     
 
-          <button
-            type='button'
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={e => e.target.closest('dialog').close()}
-          >
-            ✕
-          </button>
-
-          {showConfirm &&
-            <div>
-              <h3 className="font-bold text-lg text-error">Are you sure you want to delete this task?</h3>
-              <div className="modal-action">
-                <button
-                  className="btn btn-error btn-outline"
-                  onClick={() => {
-                    handleDelete()
-                    document.getElementById('confirm_delete_mTask_modal').close()
-                  }}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          }
-        </div>
-      </dialog>
 
 
       {/* confirm accept */}

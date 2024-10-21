@@ -1,7 +1,7 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios, { all } from 'axios'
-import { createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
+import { changePasswordAPI, createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
 import { toast } from 'react-toastify';
 import { getMeAPI } from '../api/AuthAPI';
 import Swal from 'sweetalert2'
@@ -74,7 +74,7 @@ const useUserStore = create(persist((set, get) => ({
       const result = await getLocationAndDepartmentAPI(token)
       set({ locationData: result.data.locations})
       set({ departmentData: result.data.departments})
-      console.log(result.data)
+      // console.log(result.data)
       return result.data
     }catch(error){
       console.log(error)
@@ -84,10 +84,21 @@ const useUserStore = create(persist((set, get) => ({
   createUser : async (token, body) => {
     try{
       const result = await createUserAPI(token, body)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
       return result
     }catch(error){
       console.log(error)
-      toast.error(error.response.data.message)
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.response.data.message}`,
+      });
     }
   },
 
@@ -114,9 +125,21 @@ const useUserStore = create(persist((set, get) => ({
   deleteUser : async (token, userId) => {
     try{
       const result = await deleteUserAPI(token , userId)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
       return result
     }catch(error){
       console.log(error)
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.response.data.message}`,
+      });
     }
   },
 
@@ -128,14 +151,25 @@ const useUserStore = create(persist((set, get) => ({
     try{
       console.log(body)
       const result = await updateUserAPI(token, body, userId)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
       return result
     }catch(error){
       console.log(error)
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.response.data.message}`,
+      });
     }
   },
   getMe : async (token) => {
     try{
-      console.log("get meeeeeeeeeeeeeeeeeeeeeeeeeeeee")
       const result = await getMeAPI(token)
       set({user : result.data})
       return result
@@ -143,6 +177,23 @@ const useUserStore = create(persist((set, get) => ({
       console.log(error)
     }
   },
+
+  changePassword : async (token, body, userId) => {
+    try{
+      const result = await changePasswordAPI(token, body, userId)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return result.data
+    }catch(error){
+      console.log(error)
+      toast.error(error.response.data.message)
+  }
+}
 
   
 

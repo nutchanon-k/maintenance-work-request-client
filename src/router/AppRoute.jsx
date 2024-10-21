@@ -20,13 +20,13 @@ import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
 import ShowTaskInReview from "../pages/MaintenanceTask/ShowTaskInReview";
 import CreateUser from "../pages/user/CreateUser";
 import EditUser from "../pages/user/EditUser";
-import ShowUserDetails from "../pages/user/showUserDetails";
 import { useEffect, useState } from "react";
 import ProtectRouteLeader from "./ProtectRouteLeader";
 import MaintenanceLayout from "../layouts/MaintenanceLayout";
 import RequesterLayout from "../layouts/RequesterLayout";
 import LoadingAnimation from "../assets/LoadingAnimation.json";
 import Lottie from "lottie-react";
+import ShowUserDetails from "../pages/user/ShowUserDetails";
 
 
 const guestRouter = createBrowserRouter([
@@ -142,7 +142,7 @@ export default function AppRouter() {
         return <div><Lottie animationData={LoadingAnimation} loop={true} /></div>; 
     }
 
-    console.log('test router', user)
+    // console.log('test router', user)
     
     return (
         <RouterProvider router={router} />
