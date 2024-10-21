@@ -137,8 +137,8 @@ export function CardUser(props) {
                 <div>
                     <p><span className='font-bold '>Email : </span>{member?.email}</p>
                     <p><span className='font-bold'>Position : </span>{member?.level}</p>
-                    <p><span className='font-bold'>Department : </span>{member?.department.name}</p>
-                    <p><span className='font-bold'>Dept. Type : </span>{member?.department.departmentType}</p>
+                    <p><span className='font-bold'>Department : </span>{member?.department?.name}</p>
+                    <p><span className='font-bold'>Dept. Type : </span>{member?.department?.departmentType}</p>
                 </div>
                 <div className="card-actions mt-2">
                     <button className="btn btn-outline btn-secondary  ">Click to see</button>
@@ -149,19 +149,22 @@ export function CardUser(props) {
 }
 export function CardToChooseUser(props) {
     const { member } = props
+    console.log(member)
     return (
-        <div className="bg-base-100 shadow-xl flex w-60  px-4 py-2 m-2 border rounded-2xl hover:scale-105 transition-all active:opacity-50 active:scale-100">
+
+        <div className=" indicator bg-base-100 shadow-xl flex w-60  px-4 py-2 border rounded-2xl hover:scale-105 transition-all active:opacity-50 active:scale-100">
+            {member?.maintenanceTasks.length === 0 ?<span className="indicator-item badge badge-primary"></span> : <span className="indicator-item badge badge-error"></span> }
             <div className="flex items-center space-x-4 ">
                 <div className="avatar">
-                    <Avatar className="w-14 h-14 rounded-full" imgSrc={member.picture} />
+                    <Avatar className="w-14 h-14 rounded-full" imgSrc={member?.picture} />
                 </div>
                 <div>
-                    <span className={`badge ${member.department.name === 'Mechanical' ? 'badge-success' : member.department.name === 'Tooling' ? 'badge-warning' : 'badge-info'} mb-1`}>
-                        {member.department.name}
+                    <span className={`badge ${member?.department?.name === 'Mechanical' ? 'badge-success' : member?.department?.name === 'Tooling' ? 'badge-warning' : 'badge-info'} mb-1`}>
+                        {member?.department?.name}
                     </span>
-                    <p className="font-semibold">{member.firstName + " " + member.lastName}</p>
-                    <p className="text-sm text-gray-500">{member.level}</p>
-                    <p className="text-sm text-gray-500">Task on hand # {member.tasks}</p>
+                    <p className="font-semibold">{member?.firstName + " " + member?.lastName}</p>
+                    <p className="text-sm text-gray-500">{member?.level}</p>
+                    <p className="text-sm text-gray-500 font-bold">Task on hand : <span className={`${member?.maintenanceTasks.length === 0 ? 'text-primary' : 'text-error' } font-bold `}>{member?.maintenanceTasks.length}</span></p>
                 </div>
             </div>
             <div>
@@ -171,5 +174,7 @@ export function CardToChooseUser(props) {
                 ></span>
             </div>
         </div>
+
+
     );
 }
