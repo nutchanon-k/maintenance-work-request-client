@@ -27,6 +27,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
             typeOfRootCauses : null,
             loading : false,
         })
+        localStorage.removeItem("MaintenanceTaskStore");
     },
 
     createMaintenanceTask: async (token,body) => {

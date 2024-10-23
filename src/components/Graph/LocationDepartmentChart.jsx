@@ -1,16 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Chart from 'chart.js/auto';
 import useUserStore from '../../store/UserStore';
 import useRequestTaskStore from '../../store/RequestTaskStore';
 
-const LocationDepartmentChart = () => {
+const LocationDepartmentChart = forwardRef((props, ref) => {
     const chartRef = useRef(null);
+    const chartInstanceRef = useRef(null); // ใช้เพื่อเก็บอินสแตนซ์ของ Chart.js
     const token = useUserStore((state) => state.token);
     const getAllRequestTask = useRequestTaskStore((state) => state.getAllRequestTask);
     const [taskData, setTaskData] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState('');
     const [selectedStatus, setSelectedStatus] = useState('');
   
+
+
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -72,7 +75,11 @@ const LocationDepartmentChart = () => {
         }],
       };
   
-      const myChart = new Chart(ctx, {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy(); // ทำลายกราฟเก่าก่อนสร้างใหม่
+      }
+
+      chartInstanceRef.current = new Chart(ctx, {
         type: 'bar', // ประเภทของกราฟเป็นแท่ง
         data: data,
         options: {
@@ -103,9 +110,21 @@ const LocationDepartmentChart = () => {
   
       // Cleanup เมื่อ component ถูก unmount
       return () => {
-        myChart.destroy();
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+        }
       };
     }, [filteredData]);
+
+    // ใช้ forwardRef เพื่อให้สามารถเรียกใช้ toBase64Image จาก component อื่นๆ ได้
+    useImperativeHandle(ref, () => ({
+      toBase64Image: () => {
+        if (chartInstanceRef.current) {
+          return chartInstanceRef.current.toBase64Image();
+        }
+        return null;
+      }
+    }));
   
     // ดึงรายชื่อพนักงานทั้งหมดจาก taskData
     const employees = [...new Set(taskData?.map(task => `${task.employee.firstName} ${task.employee.lastName}`))];
@@ -154,8 +173,9 @@ const LocationDepartmentChart = () => {
         <canvas ref={chartRef}></canvas> {/* ใช้ <canvas> เพื่อสร้างกราฟ */}
       </div>
     );
-  };
+  });
   
 
 export default LocationDepartmentChart;
+
 

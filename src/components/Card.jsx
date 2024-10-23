@@ -9,42 +9,89 @@ import useMaintenanceTaskStore from '../store/MaintenanceTaskStore'
 
 
 export function CardRequest(props) {
-    const { ReqTask } = props
+    const { ReqTask, typeCard } = props
 
     const getRequestTask = useRequestTaskStore(state => state.getRequestTask)
     const token = useUserStore(state => state.token)
 
     const location = ReqTask.machine?.location?.name
     const isAssigned = ReqTask.isAssigned
-    // console.log(ReqTask)
+
 
     const handleClick = (e) => {
         getRequestTask(token, ReqTask.id)
     }
 
     return (
-        <Link
-            className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all  "
-            onClick={handleClick}
-            to={`/show-request-task/${ReqTask.id}`}
-            id={ReqTask?.id}
-        >
-            <div className='flex flex-col   '>
-                <div className="card-body ">
-                    <div className='flex justify-between'>
-                        {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
-                        {isAssigned ? <div className="badge badge-primary">Assigned</div> : <div className="badge badge-secondary">Waiting..</div>}
+        
+            
+                <Link
+                    className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all  "
+                    onClick={handleClick}
+                    to={`/show-request-task/${ReqTask.id}`}
+                    id={ReqTask?.id}
+                >
+                    <div className='flex flex-col   '>
+                        <div className="card-body ">
+                            <div className='flex justify-between'>
+                                {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
+                                {isAssigned ? <div className="badge badge-primary">Assigned</div> : <div className="badge badge-secondary">Waiting..</div>}
+                            </div>
+                            <h2 className="card-title"><span className='font-bold'>Request TasK ID.</span> {ReqTask.id}</h2>
+                            <p className='text-sm text-gray-500 font-b'><span className='font-bold'>Machine ID. </span> {ReqTask.machineId} </p>
+                            <p className='text-sm text-gray-500'><span className='font-bold'>Machine Name. </span>{ReqTask.machine?.name}</p>
+                            <p className='text-sm text-gray-500'><span className='font-bold'>Request by. </span>{ReqTask.employee?.firstName} {ReqTask.employee?.lastName}</p>
+                        </div>
+                        <figure >
+                            {ReqTask.image ? <img src={ReqTask.image} alt="machine" className=' h-56 w-full' /> : <PicMachineDefault className='h-56 w-full' />}
+                        </figure>
                     </div>
-                    <h2 className="card-title"><span className='font-bold'>Request TasK ID.</span> {ReqTask.id}</h2>
-                    <p className='text-sm text-gray-500 font-b'><span className='font-bold'>Machine ID. </span> {ReqTask.machineId} </p>
-                    <p className='text-sm text-gray-500'><span className='font-bold'>Machine Name. </span>{ReqTask.machine?.name}</p>
-                    <p className='text-sm text-gray-500'><span className='font-bold'>Request by. </span>{ReqTask.employee?.firstName} {ReqTask.employee?.lastName}</p>
-                </div>
-                <figure >
-                    {ReqTask.image ? <img src={ReqTask.image} alt="machine" className=' h-56 w-full' /> : <PicMachineDefault className='h-56 w-full' />}
-                </figure>
-            </div>
-        </Link>
+                </Link>
+                
+                // <Link
+                //     className="indicator mx-7 card bg-base-100 w-full h-[5rem] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all  "
+                //     onClick={handleClick}
+                //     to={`/show-request-task/${ReqTask.id}`}
+                //     id={ReqTask?.id}
+                // >
+
+                //     {isAssigned ? <span className="indicator-item indicator-start badge badge-primary badge-">Assigned</span> : <span className="indicator-item indicator-start badge badge-secondary badge-">Waiting....</span>}
+                //     {/* <div className='flex justify-between items-center '> */}
+                //     <div className="flex items-center justify-around w-full ">
+                //         <div className='flex pl-4 w-[14rem]'>
+                //             <h2 className="card-title"><span className='font-bold'>Request TasK ID.</span> {ReqTask.id}</h2>
+                //         </div>
+
+                //         <div className="divider lg:divider-horizontal"></div>
+
+                //         <div className='flex flex-col justify-center  h-[5rem] '>
+                //             {location === "Factory1" ? <div className="badge badge-primary badge-outline">Factory1</div> : <div className="badge badge-warning badge-outline">Factory2</div>}
+                //         </div>
+
+                //         <div className="divider lg:divider-horizontal"></div>
+
+                //         <div className=' flex justify-center  w-[7rem] '>
+                //             <p className='text-sm text-gray-500 font-b'><span className='font-bold '>Machine ID. </span> {ReqTask.machineId} </p>
+                //         </div>
+
+                //         <div className="divider lg:divider-horizontal"></div>
+
+                //         <div className='flex flex-col justify-center  w-[14rem] '>
+                //             <p className='font-bold'>Machine Name. </p>
+                //             <p className='text-sm text-gray-500'>{ReqTask.machine?.name}</p>
+                //         </div>
+
+                //         <div className="divider lg:divider-horizontal"></div>
+
+                //         <div className='flex flex-col justify-center  w-[10rem] '>
+                //             <p className='font-bold'>Request by. </p>
+                //             <p className='text-sm text-gray-500'>{ReqTask.employee?.firstName} {ReqTask.employee?.lastName}</p>
+                //         </div>
+
+                //     </div>
+                // </Link>
+            
+        
     )
 }
 export function CardMaintenance(props) {
@@ -61,7 +108,7 @@ export function CardMaintenance(props) {
         getMaintenanceTask(token, maintenanceTask.id)
     }
 
-    // console.log(maintenanceTask?.requestTask?.machine?.location?.name)
+
 
     return (
         <Link
@@ -153,7 +200,7 @@ export function CardToChooseUser(props) {
     return (
 
         <div className=" indicator bg-base-100 shadow-xl flex w-60  px-4 py-2 border rounded-2xl hover:scale-105 transition-all active:opacity-50 active:scale-100">
-            {member?.maintenanceTasks.length === 0 ?<span className="indicator-item badge badge-primary"></span> : <span className="indicator-item badge badge-error"></span> }
+            {member?.maintenanceTasks.length === 0 ? <span className="indicator-item badge badge-primary"></span> : <span className="indicator-item badge badge-error"></span>}
             <div className="flex items-center space-x-4 ">
                 <div className="avatar">
                     <Avatar className="w-14 h-14 rounded-full" imgSrc={member?.picture} />
@@ -164,7 +211,7 @@ export function CardToChooseUser(props) {
                     </span>
                     <p className="font-semibold">{member?.firstName + " " + member?.lastName}</p>
                     <p className="text-sm text-gray-500">{member?.level}</p>
-                    <p className="text-sm text-gray-500 font-bold">Task on hand : <span className={`${member?.maintenanceTasks.length === 0 ? 'text-primary' : 'text-error' } font-bold `}>{member?.maintenanceTasks.length}</span></p>
+                    <p className="text-sm text-gray-500 font-bold">Task on hand : <span className={`${member?.maintenanceTasks.length === 0 ? 'text-primary' : 'text-error'} font-bold `}>{member?.maintenanceTasks.length}</span></p>
                 </div>
             </div>
             <div>

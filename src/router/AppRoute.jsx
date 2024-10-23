@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import Home from "../pages/Home";
@@ -20,17 +21,18 @@ import ShowMaintenanceTask from "../pages/MaintenanceTask/ShowMaintenanceTask";
 import ShowTaskInReview from "../pages/MaintenanceTask/ShowTaskInReview";
 import CreateUser from "../pages/user/CreateUser";
 import EditUser from "../pages/user/EditUser";
-import { useEffect, useState } from "react";
 import ProtectRouteLeader from "./ProtectRouteLeader";
 import MaintenanceLayout from "../layouts/MaintenanceLayout";
 import RequesterLayout from "../layouts/RequesterLayout";
 import LoadingAnimation from "../assets/LoadingAnimation.json";
 import Lottie from "lottie-react";
 import ShowUserDetails from "../pages/user/ShowUserDetails";
+import ResetPassword from "../pages/authenticate/ResetPassword";
 
 
 const guestRouter = createBrowserRouter([
     { path: "/", element: <Login /> },
+    { path: "/reset-password/:token", element: <ResetPassword /> },
     { path: "*", element: <Navigate to="/" /> },
     
 ]);

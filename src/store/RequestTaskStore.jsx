@@ -12,12 +12,13 @@ const useRequestTaskStore = create(persist((set, get) => ({
     loading : false,
 
     clearAllRequestTaskStore : () => {
-      set({
-        requestTasksInprogress : [], 
-        requestTasKsSuccess : [],
-        currentTask : null,
-        loading : false
-      }) 
+        set({
+            requestTasksInprogress : [], 
+            requestTasKsSuccess : [],
+            currentTask : null,
+            loading : false
+        }) 
+        localStorage.removeItem("RequestTaskStore");
     },
 
     createRequestTask: async (token,body) => {

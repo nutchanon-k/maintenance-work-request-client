@@ -15,6 +15,8 @@ const RequestInProgress = () => {
   const [allTasks, setAllTasks] = useState([]);
   const [showFilter, setShowFilter] = useState(false)
 
+  const [typeCard, setTypeCard] = useState(true);
+
   const token = useUserStore(state => state.token)
   const getRequestTaskInprogress = useRequestTaskStore(state => state.getRequestTaskInprogress)
   const requestTasksInprogress = useRequestTaskStore(state => state.requestTasksInprogress)
@@ -27,7 +29,7 @@ const RequestInProgress = () => {
     getRequestTaskInprogress(token)
   }, [])
 
-
+  console.log(typeCard)
   useEffect(() => {
     if (requestTasksInprogress) {
       setAllTasks(filterTasks(requestTasksInprogress, selectedLocation, selectedDate, searchText));
@@ -84,7 +86,9 @@ const RequestInProgress = () => {
           </Link>
         </div>
         <div className='flex items-center  gap-2 transition-all  '>
-
+          
+            {/* <input type="checkbox" value="synthwave" className="toggle theme-controller" onChange={() => setTypeCard(!typeCard)} /> */}
+          
           {showFilter &&
 
             <div className='text-3xl p-2 flex gap-2'>
@@ -103,7 +107,7 @@ const RequestInProgress = () => {
               <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} handleChangeDate={handleChangeDate} />
             </div>
           }
-                  <label className="btn btn-circle swap swap-rotate">
+          <label className="btn btn-circle swap swap-rotate">
             {/* this hidden checkbox controls the state */}
             <input
               onClick={() => setShowFilter(!showFilter)} type="checkbox"
@@ -132,11 +136,11 @@ const RequestInProgress = () => {
           </label>
           <Link to={"/create-request-task"} className="btn btn-secondary">+  Add New Task</Link>
         </div>
-        
+
       </div>
       {/* <div className="divider"></div> */}
       <div className='flex flex-1 flex-wrap gap-4 p-4 justify-evenly '>
-        {allTasks.map((el) => <CardRequest key={el.id} ReqTask={el} />)}
+        {allTasks.map((el) => <CardRequest key={el.id} ReqTask={el} typeCard={typeCard}/>)}
       </div>
 
     </div>

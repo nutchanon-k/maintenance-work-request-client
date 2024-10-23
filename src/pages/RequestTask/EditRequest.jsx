@@ -66,7 +66,7 @@ const EditRequest = () => {
 
     const validateFormData = () => {
         let formErrors = {};
-        if (!machineId.trim()) {
+        if (!machineId) {
             formErrors.machineId = 'Machine ID is required';
         }
         if (!faultSymptoms.trim()) {

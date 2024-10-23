@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import axios, { all } from 'axios'
 import { changePasswordAPI, createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
 import { toast } from 'react-toastify';
-import { getMeAPI } from '../api/AuthAPI';
+import { forgetPasswordAPI, getMeAPI, resetPasswordAPI } from '../api/AuthAPI';
 import Swal from 'sweetalert2'
 
 
@@ -47,15 +47,18 @@ const useUserStore = create(persist((set, get) => ({
   },
 
   hdlLogout: () => {
-      set({ 
-        user: null, 
-        token: "",
-        maintenanceMembers: [],
-        locationData: [],
-        departmentData: [],
-        allUser : [],
-        currentUser : null 
-      })
+    set({ 
+      user: null, 
+      token: "",
+      maintenanceMembers: [],
+      locationData: [],
+      departmentData: [],
+      allUser : [],
+      currentUser : null 
+    })
+      localStorage.removeItem("accessToken");
+      
+      
   },
 
   getMaintenanceMembers: async (token) => {
@@ -193,11 +196,51 @@ const useUserStore = create(persist((set, get) => ({
       console.log(error)
       toast.error(error.response.data.message)
   }
-}
+},
+
+  getForgetPassword : async (body) => {
+    try{
+      const result = await forgetPasswordAPI(body)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return result
+    }catch(error){
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.response.data.message}`,
+      });
+      console.log(error)
+    }
+  },
+
+  getResetPassword : async (token,body) => {
+    try{
+      const result = await resetPasswordAPI(token,body)
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${result.data.message}`,
+        showConfirmButton: false,
+        timer: 3000
+      });
+      return result
+    }catch(error){
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.response.data.message}`,
+      });
+      console.log(error)
+    }
+  },
 
   
-
-
 }),{
   name: "accessToken",
   storage: createJSONStorage(() => localStorage),
