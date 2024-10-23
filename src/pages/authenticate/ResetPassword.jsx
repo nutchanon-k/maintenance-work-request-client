@@ -1,11 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
 import useUserStore from '../../store/UserStore'
 import maintenanceGear from '../../assets/maintenanceGear.json'
-import staff from '../../assets/staff.json'
 import Lottie from 'lottie-react'
 import { useNavigate, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 
 const ResetPassword = () => {
@@ -35,10 +34,18 @@ const ResetPassword = () => {
       e.preventDefault()
       
       if (!input.password || !input.confirmPassword) {
-        return toast.error('Please fill in all fields')
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please fill in all fields",
+        });
       }
       if (input.password !== input.confirmPassword) {
-        return toast.error('Password not match')
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Password does not match",
+        });
       }
 
       const result = await getResetPassword(token, input)

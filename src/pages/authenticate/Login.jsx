@@ -5,6 +5,7 @@ import useUserStore from '../../store/UserStore'
 import maintenanceGear from '../../assets/maintenanceGear.json'
 import staff from '../../assets/staff.json'
 import Lottie from 'lottie-react'
+import Swal from 'sweetalert2'
 
 const Login = () => {
   // import state from store
@@ -20,7 +21,7 @@ const Login = () => {
     password: "",
   })
   const [showForgetPassword, setShowForgetPassword] = useState(false)
-  const [emailForgetPassword, setEmailForgetPassword] = useState({emailForgetPassword: ""})
+  const [emailForgetPassword, setEmailForgetPassword] = useState({ emailForgetPassword: "" })
 
   // set state Login  
   const hdlChange = e => {
@@ -33,7 +34,11 @@ const Login = () => {
     try {
       e.preventDefault()
       if (!input.email.trim() || !input.password.trim()) {
-        return toast.error('Please fill in all fields')
+        return Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please fill in all fields",
+        });
       }
       const data = await hdlLogin(input)
       console.log(data)
@@ -48,7 +53,7 @@ const Login = () => {
     e.preventDefault()
     if (!emailForgetPassword.emailForgetPassword) {
       setErrMsg('Please fill correct email')
-      return 
+      return
     }
 
     await getForgetPassword(emailForgetPassword)
@@ -151,7 +156,7 @@ const Login = () => {
               <h3 className="font-bold text-lg text-info">Please Input your Email</h3>
               <div className="modal-action flex-col gap-2 items-center">
                 <form className='w-full '>
-                  
+
                   {/* <label className="block text-sm mb-2">Email</label> */}
                   <input
                     type="email"
@@ -159,21 +164,21 @@ const Login = () => {
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                     placeholder="Enter your email address"
                     onChange={e => {
-                      setEmailForgetPassword({emailForgetPassword: e.target.value})
+                      setEmailForgetPassword({ emailForgetPassword: e.target.value })
                       setErrMsg('')
                     }}
                   />
-                {errMsg && <p className="text-red-500 text-xs">{errMsg}</p>}
-                <div className='w-full flex justify-end mt-2'>
-                  <button
-                    type='submit'
-                    className="btn btn-info btn-outline w-[150px] "
-                    onClick={handleForgetPassword}
-                      
+                  {errMsg && <p className="text-red-500 text-xs">{errMsg}</p>}
+                  <div className='w-full flex justify-end mt-2'>
+                    <button
+                      type='submit'
+                      className="btn btn-info btn-outline w-[150px] "
+                      onClick={handleForgetPassword}
+
                     >
-                    Send
-                  </button>
-                </div>
+                      Send
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

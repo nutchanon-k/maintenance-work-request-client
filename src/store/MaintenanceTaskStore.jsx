@@ -1,6 +1,5 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
-import { toast } from 'react-toastify';
 import { createMaintenanceTaskAPI, deleteMaintenanceTaskAPI, getAllMaintenanceTaskAPI, getMaintenanceTaskByIdAPI, getMaintenanceTaskByRequestIdAPI, getMaintenanceTaskByStatusAPI, getRootCauseFailureAPI, getTypeOfRootCausesAPI, updateMaintenanceTaskAPI, updateMaintenanceTaskStatusAPI } from '../api/MaintenanceTask';
 import Swal from 'sweetalert2'
 
@@ -49,7 +48,6 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
                 icon: "error",
                 title: "Oops...",
                 text: error.response.data.message,
-                footer: '<a href="#">Why do I have this issue?</a>'
               });
             
         }
@@ -156,7 +154,7 @@ const useMaintenanceTaskStore = create(persist((set, get) => ({
                 icon: "error",
                 title: "Oops...",
                 text: error.response.data.message,
-                footer: '<a href="#">Why do I have this issue?</a>'
+                
               });
         }
     },
