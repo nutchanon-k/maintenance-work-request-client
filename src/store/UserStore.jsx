@@ -1,9 +1,8 @@
 import {create} from 'zustand'
 import { createJSONStorage, persist } from "zustand/middleware";
-import axios, { all } from 'axios'
 import { changePasswordAPI, createUserAPI, deleteUserAPI, getLocationAndDepartmentAPI, getMaintenanceMembersAPI, getUserAPI, getUserByIdAPI, updateUserAPI } from '../api/UserAPI';
 import { toast } from 'react-toastify';
-import { forgetPasswordAPI, getMeAPI, resetPasswordAPI } from '../api/AuthAPI';
+import { forgetPasswordAPI, getMeAPI, loginAPI, resetPasswordAPI } from '../api/AuthAPI';
 import Swal from 'sweetalert2'
 
 
@@ -24,8 +23,9 @@ const useUserStore = create(persist((set, get) => ({
 
   hdlLogin: async (body) => {
     try{
-      const result = await axios.post("http://localhost:8000/auth/login",body)
+      const result = await loginAPI(body)
       set({ token: result.data.token, user: result.data.user })
+      localStorage.setItem('token', result.data.token);
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -57,6 +57,7 @@ const useUserStore = create(persist((set, get) => ({
       currentUser : null 
     })
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("token");
       
       
   },

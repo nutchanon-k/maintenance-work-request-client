@@ -1,11 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
 import useUserStore from '../../store/UserStore'
 import maintenanceGear from '../../assets/maintenanceGear.json'
 import staff from '../../assets/staff.json'
 import Lottie from 'lottie-react'
 import Swal from 'sweetalert2'
+import LoadingBlack from '../../assets/LoadingBlack.json';
+
 
 const Login = () => {
   // import state from store
@@ -13,6 +14,7 @@ const Login = () => {
   const getForgetPassword = useUserStore(state => state.getForgetPassword)
 
   const [errMsg, setErrMsg] = useState('')
+  const [loading, setLoading] = useState(false)
 
 
   // For collect data (input by user) before send to DataStore 
@@ -50,18 +52,27 @@ const Login = () => {
   }
 
   const handleForgetPassword = async (e) => {
-    e.preventDefault()
-    if (!emailForgetPassword.emailForgetPassword) {
-      setErrMsg('Please fill correct email')
-      return
-    }
 
-    await getForgetPassword(emailForgetPassword)
-    document.getElementById('forget_password_modal').close()
+    e.preventDefault()
+    try {
+      if (!emailForgetPassword.emailForgetPassword) {
+        setErrMsg('Please fill correct email')
+        return
+      }
+      setLoading(true)
+      await getForgetPassword(emailForgetPassword)
+      document.getElementById('forget_password_modal').close()
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+      setEmailForgetPassword({ emailForgetPassword: "" })
+    }
   }
 
 
-  console.log(emailForgetPassword)
+  // console.log(emailForgetPassword)
 
   return (
     <>
@@ -170,14 +181,19 @@ const Login = () => {
                   />
                   {errMsg && <p className="text-red-500 text-xs">{errMsg}</p>}
                   <div className='w-full flex justify-end mt-2'>
-                    <button
-                      type='submit'
-                      className="btn btn-info btn-outline w-[150px] "
-                      onClick={handleForgetPassword}
+                    {loading ?
+                      <Lottie animationData={LoadingBlack} loop={true} className='w-20 h-20' />
+                      :
+                      <button
+                        type='submit'
+                        className="btn btn-info btn-outline w-[150px] "
+                        onClick={handleForgetPassword}
 
-                    >
-                      Send
-                    </button>
+                      >
+                        Send
+                      </button>
+                    }
+
                   </div>
                 </form>
               </div>

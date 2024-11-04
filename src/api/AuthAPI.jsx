@@ -1,17 +1,19 @@
 import axios from "axios";
+import axiosInstance from "./Interceptor";
+
+
+export const loginAPI = async (body) => {
+    return axiosInstance.post('/auth/login', body)
+}
 
 
 export const getMeAPI = async (token) => {
-    return await axios.get("http://localhost:8000/auth/me", { 
-        headers: { 
-            Authorization: `Bearer ${token}` 
-        } 
-    }) 
+    return axiosInstance.get('/auth/me')
 }
 
 
 export const forgetPasswordAPI = async (body) =>{ 
-    return await axios.post("http://localhost:8000/auth//forgot-password", body)
+    return await axiosInstance.post("/auth/forgot-password", body)
 }
 
 export const  resetPasswordAPI = async (token , body) => {

@@ -28,10 +28,6 @@ export const getUserAPI =  async (token) => {
     return result;
 }
 
-// export const getUserByIdAPI =  async (token, userId) => {
-    
-// }
-
 export const createUserAPI =  async (token, body) => {
     const result =  await axios.post("http://localhost:8000/user", body, {
         headers: {

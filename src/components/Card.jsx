@@ -26,7 +26,7 @@ export function CardRequest(props) {
         
             
                 <Link
-                    className="card bg-base-100 w-[300px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all  "
+                    className="card bg-base-100 w-[310px] shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all  "
                     onClick={handleClick}
                     to={`/show-request-task/${ReqTask.id}`}
                     id={ReqTask?.id}
@@ -112,7 +112,7 @@ export function CardMaintenance(props) {
 
     return (
         <Link
-            className={`card bg-base-100 w-[300px] ${maintenanceTask.isRejected ? "indicator" : ""} shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all`}
+            className={`card bg-base-100 w-[310px] ${maintenanceTask.isRejected ? "indicator" : ""} shadow-xl hover:transform hover:scale-105 hover:shadow-2xl active:transform active:scale-100 active:opacity-50 transition-all`}
             onClick={handleClick}
             to={
                 maintenanceTask.status === "inReview" || maintenanceTask.status === "success" ?

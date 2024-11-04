@@ -12,7 +12,6 @@ import useUserStore from '../store/UserStore';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const Home = () => {
-  const token = useUserStore((state) => state.token);
   const user = useUserStore((state) => state.user);
 
   const role = user?.role;
@@ -26,6 +25,7 @@ const Home = () => {
 
   const getChartImage = (chartRef) => {
     if (chartRef && chartRef.current && chartRef.current.toBase64Image) {
+
       return chartRef.current.toBase64Image();
     } else {
       console.error('Chart.js instance not found for the given ref.');
@@ -33,20 +33,21 @@ const Home = () => {
     }
   };
 
-  const getImageAsBase64 = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
+  // const getImageAsBase64 = async (url) => {
+  //   const response = await fetch(url);
+  //   const blob = await response.blob();
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => resolve(reader.result);
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(blob);
+  //   });
+  // };
 
+  
   const exportToPDF = async () => {
     try {
-      const logoBase64 = await getImageAsBase64('/assets/maintenanceWorkRequest.png');
+      // const logoBase64 = await getImageAsBase64('/assets/maintenanceWorkRequest.png');
       const requestStatusImage = getChartImage(requestStatusRef);
       const maintenanceStatusImage = getChartImage(maintenanceStatusRef);
       const locationDepartmentImage = getChartImage(locationDepartmentRef);
@@ -84,13 +85,13 @@ const Home = () => {
           { text: '', pageBreak: 'after' },
 
           // Key Metrics - Request Task Status
-          { text: 'Request Task Status', style: 'subheader', alignment: 'center'  },
+          { text: 'Request Task Status', style: 'subheader', alignment: 'center' },
           { image: requestStatusImage, width: 350, alignment: 'center', },
           { text: '', pageBreak: 'after' },
 
           // Location Department Chart
           { text: 'Location Department Chart', style: 'sectionHeader', alignment: 'center' },
-          { image: locationDepartmentImage, width: 500, alignment: 'center'},
+          { image: locationDepartmentImage, width: 500, alignment: 'center' },
           { text: '', pageBreak: 'after' },
 
           // Key Metrics - Maintenance Task Status
@@ -176,35 +177,66 @@ const Home = () => {
             </button>
           </div>
         </>
-      ) : (
-        <>
-          <div>
-            <div className='flex flex-col items-center justify-around'>
-              <div className='w-full h-full p-4 flex items-center justify-around '>
-                <div className='w-1/3 chart-container'>
-                  <RequestStatus ref={requestStatusRef} />
+      ) : role === 'requester' && level === 'staff' ?
+        (
+          <>
+            <div>
+              <div className='flex flex-col items-center justify-around'>
+                <div className='w-full h-full p-4 flex items-center justify-around '>
+                  <div className='w-1/3 chart-container'>
+                    <RequestStatus ref={requestStatusRef} />
+                  </div>
+                  <div className='w-1/3 chart-container'>
+                    <MaintenanceStatus ref={maintenanceStatusRef} />
+                  </div>
                 </div>
-                <div className='w-1/3 chart-container'>
-                  <MaintenanceStatus ref={maintenanceStatusRef} />
+                <div className='w-5/6 chart-container'>
+                  <LocationDepartmentChart ref={locationDepartmentRef} />
                 </div>
-              </div>
-              <div className='w-5/6 chart-container'>
-                <LocationDepartmentChart ref={locationDepartmentRef} />
               </div>
             </div>
-          </div>
 
-          {/* ปุ่ม Export เป็น PDF */}
-          <div className='flex justify-center mt-4'>
-            <button
-              onClick={exportToPDF}
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            >
-              Export as PDF
-            </button>
-          </div>
-        </>
-      )}
+            {/* ปุ่ม Export เป็น PDF */}
+            <div className='flex justify-center mt-4'>
+              <button
+                onClick={exportToPDF}
+                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              >
+                Export as PDF
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <div className='flex flex-col items-center justify-around'>
+                <div className='w-full h-full p-4 flex items-center justify-around '>
+                  <div className='w-1/2 h-1/4 chart-container'>
+                    <MaintenanceStatus ref={maintenanceStatusRef} />
+                  </div>
+                  <div className='w-full chart-container'>
+                    <RootCauseFailureChart ref={rootCauseFailureRef} />
+                  </div>
+                </div>
+                <div className='chart-container w-5/6'>
+                  <MTTRChart ref={mttrChartRef} />
+                </div>
+
+              </div>
+            </div>
+
+            {/* ปุ่ม Export เป็น PDF */}
+            <div className='flex justify-center mt-4'>
+              <button
+                onClick={exportToPDF}
+                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              >
+                Export as PDF
+              </button>
+            </div>
+          </>
+        )
+      }
     </div>
   );
 };
