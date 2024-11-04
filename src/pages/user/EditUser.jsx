@@ -262,56 +262,84 @@ const EditUser = () => {
           </div>
 
           {/* Upload Image */}
+          {/* Upload Image */}
           <div className="col-span-2 form-control">
             <label className="label">
               <span className="label-text font-semibold">Upload image</span>
             </label>
-            <div className="flex items-center justify-center w-full">
-              <div
-                className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 relative p-2"
-                onClick={() => document.getElementById('input-profile-picture').click()}
-              >
-                {!image && oldImage && (
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <img src={oldImage} className="w-1/2 h-full object-cover" />
+
+            {oldImage ? (
+              <div className="flex items-center justify-center w-full">
+                <div
+                  className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 relative p-2"
+                  onClick={() => document.getElementById('input-profile-picture').click()}
+                >
+                  <input
+                    type="file"
+                    id='input-profile-picture'
+                    className="hidden"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                  <div className='w-full absolute top-1 right-1 flex justify-end'>
+                    {oldImage && <CloseIcon
+                      className='w-10 h-10 hover:scale-110 active:scale-100 rounded-full cursor-pointer opacity-60'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        document.getElementById('input-profile-picture').value = '';
+                        setOldImage(null);
+                      }}
+                    />}
                   </div>
-                )}
-                <input
-                  type="file"
-                  id="input-profile-picture"
-                  className="hidden"
-                  onChange={(e) => setImage(e.target.files[0])}
-                />
-                {image && (
-                  <div className="w-full absolute top-1 right-1 flex justify-end">
-                    <CloseIcon
-                      className="w-10 h-10 hover:scale-110 active:scale-100 rounded-full cursor-pointer opacity-60"
+                  {oldImage && <img src={oldImage} className='w-1/2 h-full object-cover' />}
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-full">
+                <div
+                  className="flex flex-col items-center justify-center w-full border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 relative p-2"
+                  onClick={() => document.getElementById('input-profile-picture').click()}
+                >
+                  {!image && <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <UploadIcon className="w-10 h-10 mb-3 text-gray-400" />
+                    <p className="text-sm text-gray-400">Click to upload</p>
+                  </div>}
+                  <input
+                    type="file"
+                    id='input-profile-picture'
+                    className="hidden"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                  <div className='w-full absolute top-1 right-1 flex justify-end'>
+                    {image && <CloseIcon
+                      className='w-10 h-10 hover:scale-110 active:scale-100 rounded-full cursor-pointer opacity-60'
                       onClick={(e) => {
                         e.stopPropagation();
                         document.getElementById('input-profile-picture').value = '';
                         setImage(null);
                       }}
-                    />
+                    />}
                   </div>
-                )}
-                {image && <img src={URL.createObjectURL(image)} className="w-1/2 h-full object-cover" />}
+                  {image && <img src={URL.createObjectURL(image)} className='w-1/2 h-full object-cover' />}
+                </div>
               </div>
-            </div>
+            )}
           </div>
+      
+     
 
-          {loading ? (
-            <div className="flex justify-center items-center mt-6 h-full">
-              <Lottie animationData={LoadingBlack} loop={true} className="w-20 h-20" />
-            </div>
-          ) : (
-            <div className="flex w-full justify-between">
-              <Link to={`/show-user/${id}`} className="btn btn-outline w-[150px]">Back</Link>
-              <button type="submit" className="btn btn-primary w-[150px]">Submit</button>
-            </div>
-          )}
-        </form>
-      </div>
-    </div>
+      {loading ? (
+        <div className="flex justify-center items-center mt-6 h-full">
+          <Lottie animationData={LoadingBlack} loop={true} className="w-20 h-20" />
+        </div>
+      ) : (
+        <div className="flex w-full justify-between">
+          <Link to={`/show-user/${id}`} className="btn btn-outline w-[150px]">Back</Link>
+          <button type="submit" className="btn btn-primary w-[150px]">Submit</button>
+        </div>
+      )}
+    </form>
+      </div >
+    </div >
   );
 };
 
